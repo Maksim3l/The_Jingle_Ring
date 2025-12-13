@@ -1,0 +1,74 @@
+[gd_scene load_steps=5 format=3 uid="uid://h24hs8ve8cep"]
+
+[ext_resource type="Script" uid="uid://cgtiklk1hochm" path="res://Screens/main_menu.gd" id="1_te60y"]
+[ext_resource type="Texture2D" uid="uid://cqsy52841xtvq" path="res://Assets/Images/Background/DarkIntro.png" id="1_vj53j"]
+[ext_resource type="FontFile" uid="uid://riueonopatx1" path="res://Assets/Fonts/GothicPixels.ttf" id="2_wk3tx"]
+[ext_resource type="FontFile" uid="uid://c1vn1u17pd6rs" path="res://Assets/Fonts/Normal.ttf" id="4_kqc0l"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_te60y")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_vj53j")
+stretch_mode = 6
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -199.5
+offset_top = 26.0
+offset_right = 199.5
+offset_bottom = 74.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.654902, 0.60784316, 0.3372549, 1)
+theme_override_colors/font_shadow_color = Color(0.76862746, 0.2627451, 0.11372549, 0.49411765)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 1
+theme_override_fonts/font = ExtResource("2_wk3tx")
+theme_override_font_sizes/font_size = 48
+text = "The Jingle Ring"
+
+[node name="ButtonContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+
+[node name="StartBtn" type="Button" parent="ButtonContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.654902, 0.60784316, 0.3372549, 1)
+theme_override_fonts/font = ExtResource("4_kqc0l")
+theme_override_font_sizes/font_size = 24
+text = "Start"
+
+[node name="ExitBtn" type="Button" parent="ButtonContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.654902, 0.60784316, 0.3372549, 1)
+theme_override_fonts/font = ExtResource("4_kqc0l")
+theme_override_font_sizes/font_size = 24
+text = "Exit"

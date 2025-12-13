@@ -1,0 +1,51 @@
+[gd_scene load_steps=3 format=3 uid="uid://dp6crko2peg5g"]
+
+[ext_resource type="Texture2D" uid="uid://cw7vs4riwbelp" path="res://Assets/Images/Background/FightRink.png" id="1_a116d"]
+[ext_resource type="PackedScene" uid="uid://baffuro53158g" path="res://Entity/player.tscn" id="1_uo11a"]
+
+[node name="GameScreen" type="Node2D"]
+
+[node name="RingBg" type="TextureRect" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -180.0
+offset_right = 320.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_a116d")
+
+[node name="Entities" type="Node2D" parent="."]
+
+[node name="Player" parent="Entities" instance=ExtResource("1_uo11a")]
+
+[node name="EnemySpawnPoint" type="Marker2D" parent="Entities"]
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="HealthDisplay" type="Control" parent="UILayer"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ScoreDisplay" type="Control" parent="UILayer"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PauseMenu" type="Control" parent="UILayer"]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="GameController" type="Node" parent="."]

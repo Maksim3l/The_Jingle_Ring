@@ -1,0 +1,51 @@
+[gd_scene load_steps=3 format=3 uid="uid://baffuro53158g"]
+
+[ext_resource type="Script" uid="uid://067anstrd8id" path="res://Entity/player.gd" id="1_ta3ek"]
+[ext_resource type="Texture2D" uid="uid://nq2hefknu0ev" path="res://Assets/Images/Player/Bunny_player-Sheet.png" id="2_0fxvp"]
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_ta3ek")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(2, 2)
+texture = ExtResource("2_0fxvp")
+hframes = 4
+vframes = 7
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="HitboxLeft" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxLeft"]
+
+[node name="HitboxRight" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxRight"]
+
+[node name="BloodParticles" type="GPUParticles2D" parent="."]
+
+[node name="StateMachine" type="Node" parent="."]
+
+[node name="IdleState" type="Node" parent="StateMachine"]
+
+[node name="WalkForwardState" type="Node" parent="StateMachine"]
+
+[node name="WalkBackState" type="Node" parent="StateMachine"]
+
+[node name="AttackLightLeftState" type="Node" parent="StateMachine"]
+
+[node name="AttackLightRightState" type="Node" parent="StateMachine"]
+
+[node name="AttackHeavyLeftState" type="Node" parent="StateMachine"]
+
+[node name="AttackHeavyRightState" type="Node" parent="StateMachine"]
+
+[node name="DodgeLeftState" type="Node" parent="StateMachine"]
+
+[node name="DodgeRightState" type="Node" parent="StateMachine"]
+
+[node name="DuckState" type="Node" parent="StateMachine"]
+
+[node name="HitState" type="Node" parent="StateMachine"]
+
+[node name="DieState" type="Node" parent="StateMachine"]
