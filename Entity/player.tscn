@@ -42,15 +42,8 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id="Animation_tuyrv"]
 resource_name = "attack_heavy_left"
-step = 0.0
-
-[sub_resource type="Animation" id="Animation_4bkn7"]
-resource_name = "attack_heavy_right"
-step = 0.0
-
-[sub_resource type="Animation" id="Animation_0fxvp"]
-resource_name = "attack_light_left"
-length = 0.3
+length = 0.5
+loop_mode = 1
 step = 0.0
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -59,10 +52,58 @@ tracks/0/path = NodePath("Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.08746374, 0.17929065, 0.267896),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.03360551, 0.21030414, 0.29303586, 0.3839386, 0.43044618),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [8, 9, 10, 11]
+"values": [1, 12, 13, 14, 15, 1]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.021448966),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_4bkn7"]
+resource_name = "attack_heavy_right"
+length = 0.5
+loop_mode = 1
+step = 0.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0041855294, 0.03779104, 0.21448967, 0.2972214, 0.38812414, 0.4346317),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [1, 12, 13, 14, 15, 1]
+}
+
+[sub_resource type="Animation" id="Animation_0fxvp"]
+resource_name = "attack_light_left"
+length = 0.25
+loop_mode = 1
+step = 0.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.04275976, 0.07462145, 0.17131318, 0.20149751),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [1, 10, 9, 10, 1]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -79,19 +120,115 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id="Animation_e6op4"]
 resource_name = "attack_light_right"
+length = 0.25
 step = 0.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.04275976, 0.07462145, 0.17131318, 0.20149751),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [1, 10, 9, 10, 1]
+}
 
 [sub_resource type="Animation" id="Animation_op4iw"]
 resource_name = "death"
+loop_mode = 1
 step = 0.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0010213591, 0.02553447, 0.14605728, 0.29313594, 0.7680773),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [1, 24, 25, 26, 27]
+}
 
 [sub_resource type="Animation" id="Animation_vnsee"]
 resource_name = "hit_left"
+length = 0.25
+loop_mode = 1
 step = 0.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.002042761, 0.13052024, 0.18895514),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [5, 6, 1]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.11000002),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
 
 [sub_resource type="Animation" id="Animation_11xc7"]
 resource_name = "hit_right"
+length = 0.25
+loop_mode = 1
 step = 0.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.12847748, 0.18691239),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [5, 6, 1]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.018384827),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_01uqx"]
+resource_name = "idle"
+length = 8.0
+loop_mode = 1
+step = 0.09
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.031576395, 0.66794, 1.2133945, 1.7272727, 2.2727273, 2.7272727, 4.2207284, 4.857092, 5.4025464, 5.9164248, 6.4618793, 6.9164248),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [1, 0, 1, 2, 1, 1, 1, 0, 1, 2, 1, 1]
+}
 
 [sub_resource type="Animation" id="Animation_01uqx"]
 resource_name = "idle"
