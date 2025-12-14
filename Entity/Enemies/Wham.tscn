@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://baeypyl51pl1b"]
+
+[ext_resource type="PackedScene" uid="uid://cuqysyyv1q081" path="res://Entity/enemy_base.tscn" id="1_j0v5b"]
+[ext_resource type="Script" uid="uid://sv7wnvx6h4ti" path="res://Entity/Enemies/wham.gd" id="2_g8r54"]
+
+[node name="Wham" instance=ExtResource("1_j0v5b")]
+script = ExtResource("2_g8r54")

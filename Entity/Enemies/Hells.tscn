@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://coskwjl8yxw3y"]
+
+[ext_resource type="PackedScene" uid="uid://cuqysyyv1q081" path="res://Entity/enemy_base.tscn" id="1_l7hnc"]
+[ext_resource type="Script" uid="uid://b35pmduwvcmor" path="res://Entity/Enemies/bobby_hells.gd" id="2_tibgx"]
+
+[node name="Hells" instance=ExtResource("1_l7hnc")]
+script = ExtResource("2_tibgx")

@@ -1,9 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://dp6crko2peg5g"]
+[gd_scene load_steps=7 format=3 uid="uid://dp6crko2peg5g"]
 
 [ext_resource type="Texture2D" uid="uid://cw7vs4riwbelp" path="res://Assets/Images/Background/FightRink.png" id="1_a116d"]
 [ext_resource type="PackedScene" uid="uid://baffuro53158g" path="res://Entity/player.tscn" id="1_uo11a"]
+[ext_resource type="Script" uid="uid://dqoa0gedlnrm2" path="res://Screens/game_screen.gd" id="1_wchbt"]
+[ext_resource type="Script" uid="uid://bc8eitk5fopjb" path="res://Screens/health_display.gd" id="4_hnpil"]
+[ext_resource type="Script" uid="uid://gxr6mohkrtw8" path="res://Screens/score_display.gd" id="5_mcda4"]
+[ext_resource type="Script" uid="uid://8s3mivwy67g2" path="res://Screens/pause_menu.gd" id="6_cw4t1"]
 
 [node name="GameScreen" type="Node2D"]
+script = ExtResource("1_wchbt")
 
 [node name="RingBg" type="TextureRect" parent="."]
 anchors_preset = 8
@@ -21,23 +26,36 @@ texture = ExtResource("1_a116d")
 
 [node name="Entities" type="Node2D" parent="."]
 
-[node name="Player" parent="Entities" instance=ExtResource("1_uo11a")]
-
 [node name="EnemySpawnPoint" type="Marker2D" parent="Entities"]
+
+[node name="PlayerPosition" type="Marker2D" parent="Entities"]
+position = Vector2(0, 180)
+
+[node name="Player" parent="." instance=ExtResource("1_uo11a")]
+base_damage = 10
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 
 [node name="HealthDisplay" type="Control" parent="UILayer"]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = -318.0
+offset_top = -178.0
+offset_right = -122.0
+offset_bottom = -138.0
+script = ExtResource("4_hnpil")
 
 [node name="ScoreDisplay" type="Control" parent="UILayer"]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -407.0
+offset_top = -178.0
+offset_right = -230.0
+offset_bottom = -138.0
+grow_horizontal = 2
+script = ExtResource("5_mcda4")
 
 [node name="PauseMenu" type="Control" parent="UILayer"]
 visible = false
@@ -45,6 +63,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+script = ExtResource("6_cw4t1")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 

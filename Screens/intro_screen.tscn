@@ -217,10 +217,59 @@ grow_vertical = 2
 size_flags_horizontal = 2
 size_flags_vertical = 2
 theme_override_fonts/normal_font = ExtResource("4_8tax2")
-theme_override_font_sizes/normal_font_size = 74
+theme_override_font_sizes/normal_font_size = 70
 fit_content = true
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="DifficultySelect" type="Control" parent="OverlayLayer"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="OverlayLayer/DifficultySelect"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -159.5
+offset_top = -152.0
+offset_right = 159.5
+offset_bottom = 152.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="OverlayLayer/DifficultySelect/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_8tax2")
+theme_override_font_sizes/font_size = 70
+text = "Difficulty"
+
+[node name="EasyBtn" type="Button" parent="OverlayLayer/DifficultySelect/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_8tax2")
+theme_override_font_sizes/font_size = 60
+text = "1.12"
+
+[node name="MediumBtn" type="Button" parent="OverlayLayer/DifficultySelect/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_8tax2")
+theme_override_font_sizes/font_size = 60
+text = "20.12"
+
+[node name="HardBtn" type="Button" parent="OverlayLayer/DifficultySelect/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_8tax2")
+theme_override_font_sizes/font_size = 60
+text = "24.12"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
