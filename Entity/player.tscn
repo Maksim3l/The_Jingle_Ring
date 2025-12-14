@@ -1,7 +1,17 @@
-[gd_scene load_steps=13 format=3 uid="uid://baffuro53158g"]
+[gd_scene load_steps=27 format=3 uid="uid://baffuro53158g"]
 
 [ext_resource type="Script" uid="uid://067anstrd8id" path="res://Entity/player.gd" id="1_ta3ek"]
 [ext_resource type="Texture2D" uid="uid://nq2hefknu0ev" path="res://Assets/Images/Player/Bunny_player-Sheet.png" id="2_0fxvp"]
+[ext_resource type="Texture2D" uid="uid://dwbifmw6lhpmc" path="res://Assets/Images/Enemy/blood_particle.png" id="3_0fxvp"]
+[ext_resource type="Script" uid="uid://h8fdfp6m5ldu" path="res://Entity/state_machine.gd" id="4_01uqx"]
+[ext_resource type="Script" uid="uid://c6luewcu70bim" path="res://Entity/States/idle_state.gd" id="5_e6op4"]
+[ext_resource type="Script" uid="uid://crxwdeyb608pl" path="res://Entity/States/dodge_left_state.gd" id="6_tuyrv"]
+[ext_resource type="Script" uid="uid://byncvofj33pea" path="res://Entity/States/attack_light_state.gd" id="6_walb3"]
+[ext_resource type="Script" uid="uid://2ygintde0q32" path="res://Entity/States/dodge_right_state.gd" id="7_4bkn7"]
+[ext_resource type="Script" uid="uid://b6axoq0hvfof2" path="res://Entity/States/attack_heavy_state.gd" id="7_x7om2"]
+[ext_resource type="Script" uid="uid://bqfj7e6tn5j7m" path="res://Entity/States/duck_state.gd" id="8_op4iw"]
+[ext_resource type="Script" uid="uid://g3o5bemu2qym" path="res://Entity/States/hit_state.gd" id="9_vnsee"]
+[ext_resource type="Script" uid="uid://jvpu4xk4ro8k" path="res://Entity/States/die_state.gd" id="10_11xc7"]
 
 [sub_resource type="Animation" id="Animation_ta3ek"]
 length = 0.001
@@ -220,6 +230,23 @@ tracks/0/keys = {
 "values": [1, 0, 1, 2, 1, 1, 1, 0, 1, 2, 1, 1]
 }
 
+[sub_resource type="Animation" id="Animation_01uqx"]
+resource_name = "idle"
+loop_mode = 1
+step = 0.09
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1, 1.6363636, 2.5454547, 3.2727275, 4.181818, 4.909091, 5.818182),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [1, 0, 1, 2, 1, 2, 1, 0]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_walb3"]
 _data = {
 &"RESET": SubResource("Animation_ta3ek"),
@@ -233,11 +260,35 @@ _data = {
 &"idle": SubResource("Animation_01uqx")
 }
 
-[node name="Player" type="CharacterBody2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ta3ek"]
+size = Vector2(239.5, 227)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ta3ek"]
+radius = 23.0
+height = 74.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_0fxvp"]
+radius = 19.0
+height = 182.0
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_0fxvp"]
+particle_flag_disable_z = true
+emission_shape = 2
+emission_sphere_radius = 1.0
+direction = Vector3(0, -1, 0)
+initial_velocity_min = 100.0
+initial_velocity_max = 200.0
+gravity = Vector3(0, 1000, 0)
+scale_min = 0.099999994
+scale_max = 0.29999998
+color = Color(0.54313457, 1.3596937e-06, 3.3691526e-07, 1)
+
+[node name="Player" type="Node2D"]
 script = ExtResource("1_ta3ek")
+base_damage = 1
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(0, -86.5)
+position = Vector2(-7, -86.5)
 scale = Vector2(2, 2)
 texture = ExtResource("2_0fxvp")
 hframes = 4
@@ -248,38 +299,81 @@ libraries = {
 &"": SubResource("AnimationLibrary_walb3")
 }
 
-[node name="HitboxLeft" type="Area2D" parent="."]
+[node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 16
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxLeft"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(0.25, -234.5)
+shape = SubResource("RectangleShape2D_ta3ek")
+disabled = true
+debug_color = Color(0.35547245, 0.48253912, 1, 0.41960785)
 
-[node name="HitboxRight" type="Area2D" parent="."]
+[node name="HurtBoxOverhead" type="Area2D" parent="."]
+position = Vector2(-62, -177)
+collision_mask = 132
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxRight"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBoxOverhead"]
+position = Vector2(60, 140)
+shape = SubResource("CapsuleShape2D_ta3ek")
+debug_color = Color(0.64390385, 0.5233438, 0, 0.41960785)
+
+[node name="HurtBoxLeft" type="Area2D" parent="."]
+position = Vector2(-62, -177)
+collision_mask = 32
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBoxLeft"]
+position = Vector2(17, 86)
+shape = SubResource("CapsuleShape2D_0fxvp")
+debug_color = Color(1.8770993e-06, 0.6208931, 0.56137574, 0.41960785)
+
+[node name="HurtBoxRight" type="Area2D" parent="."]
+position = Vector2(-62, -177)
+collision_layer = 2
+collision_mask = 64
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBoxRight"]
+position = Vector2(104, 84)
+shape = SubResource("CapsuleShape2D_0fxvp")
+debug_color = Color(0.9561886, 9.62615e-08, 0.54182583, 0.41960785)
 
 [node name="BloodParticles" type="GPUParticles2D" parent="."]
+position = Vector2(0, -120)
+emitting = false
+amount = 30
+texture = ExtResource("3_0fxvp")
+lifetime = 0.4
+one_shot = true
+explosiveness = 1.0
+randomness = 0.1
+trail_sections = 2
+trail_section_subdivisions = 1
+process_material = SubResource("ParticleProcessMaterial_0fxvp")
 
-[node name="StateMachine" type="Node" parent="."]
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
+script = ExtResource("4_01uqx")
+initial_state = NodePath("IdleState")
 
 [node name="IdleState" type="Node" parent="StateMachine"]
+script = ExtResource("5_e6op4")
 
-[node name="WalkForwardState" type="Node" parent="StateMachine"]
+[node name="AttackLightState" type="Node" parent="StateMachine"]
+script = ExtResource("6_walb3")
 
-[node name="WalkBackState" type="Node" parent="StateMachine"]
-
-[node name="AttackLightLeftState" type="Node" parent="StateMachine"]
-
-[node name="AttackLightRightState" type="Node" parent="StateMachine"]
-
-[node name="AttackHeavyLeftState" type="Node" parent="StateMachine"]
-
-[node name="AttackHeavyRightState" type="Node" parent="StateMachine"]
+[node name="AttackHeavyState" type="Node" parent="StateMachine"]
+script = ExtResource("7_x7om2")
 
 [node name="DodgeLeftState" type="Node" parent="StateMachine"]
+script = ExtResource("6_tuyrv")
 
 [node name="DodgeRightState" type="Node" parent="StateMachine"]
+script = ExtResource("7_4bkn7")
 
 [node name="DuckState" type="Node" parent="StateMachine"]
+script = ExtResource("8_op4iw")
 
 [node name="HitState" type="Node" parent="StateMachine"]
+script = ExtResource("9_vnsee")
 
 [node name="DieState" type="Node" parent="StateMachine"]
+script = ExtResource("10_11xc7")

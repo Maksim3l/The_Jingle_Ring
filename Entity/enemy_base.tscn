@@ -1,0 +1,70 @@
+[gd_scene load_steps=11 format=3 uid="uid://cuqysyyv1q081"]
+
+[ext_resource type="Script" uid="uid://bik7ewwxt6c0n" path="res://Entity/enemy_base.gd" id="1_1b3pc"]
+[ext_resource type="Script" uid="uid://c7iygaanu54ug" path="res://Entity/States/enemy_idle_state.gd" id="2_oa3r6"]
+[ext_resource type="Script" uid="uid://oc8udbxb71u4" path="res://Entity/States/enemy_buff_state.gd" id="2_ybck8"]
+[ext_resource type="Script" uid="uid://dthb4qdqjs15q" path="res://Entity/States/enemy_telegraph_state.gd" id="3_ke1iy"]
+[ext_resource type="Script" uid="uid://tqpyec8f883n" path="res://Entity/States/enemy_attack_state.gd" id="4_dqrqh"]
+[ext_resource type="Script" uid="uid://dj5uftagly7f0" path="res://Entity/States/enemy_hit_state.gd" id="5_y7cyt"]
+[ext_resource type="Script" uid="uid://bves0wu3am4px" path="res://Entity/States/enemy_die_state.gd" id="6_w3nnp"]
+[ext_resource type="Script" uid="uid://coe3bsts8g2nc" path="res://Entity/States/enemy_heal_state.gd" id="7_spobe"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_oa3r6"]
+size = Vector2(99, 147)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ke1iy"]
+size = Vector2(105, 144)
+
+[node name="EnemyBase" type="Node2D"]
+script = ExtResource("1_1b3pc")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -80)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="HitBox" type="Area2D" parent="."]
+collision_layer = 32
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
+position = Vector2(-0.5, 73.5)
+shape = SubResource("RectangleShape2D_oa3r6")
+disabled = true
+
+[node name="HurtBox" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
+position = Vector2(-1.5, -72)
+shape = SubResource("RectangleShape2D_ke1iy")
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+offset_left = -34.0
+offset_top = -171.0
+offset_right = 37.0
+offset_bottom = -144.0
+value = 100.0
+
+[node name="StateMachine" type="Node" parent="."]
+
+[node name="IdleState" type="Node" parent="StateMachine"]
+script = ExtResource("2_oa3r6")
+
+[node name="TelegraphState" type="Node" parent="StateMachine"]
+script = ExtResource("3_ke1iy")
+
+[node name="AttackState" type="Node" parent="StateMachine"]
+script = ExtResource("4_dqrqh")
+
+[node name="HitState" type="Node" parent="StateMachine"]
+script = ExtResource("5_y7cyt")
+
+[node name="DieState" type="Node" parent="StateMachine"]
+script = ExtResource("6_w3nnp")
+
+[node name="HealState" type="Node" parent="StateMachine"]
+script = ExtResource("7_spobe")
+
+[node name="BuffState" type="Node" parent="StateMachine"]
+script = ExtResource("2_ybck8")

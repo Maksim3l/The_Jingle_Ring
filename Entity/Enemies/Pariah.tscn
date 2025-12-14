@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3 uid="uid://23k6tc25r5ge"]
+
+[ext_resource type="PackedScene" uid="uid://cuqysyyv1q081" path="res://Entity/enemy_base.tscn" id="1_gctlt"]
+[ext_resource type="Script" uid="uid://ddxi2cpgxrvc" path="res://Entity/Enemies/pariah.gd" id="2_5ihn1"]
+[ext_resource type="Texture2D" uid="uid://fmu5otpgb5ah" path="res://Assets/Images/Enemy/Scary-Sheet.png" id="2_qwit3"]
+
+[node name="Pariah" instance=ExtResource("1_gctlt")]
+script = ExtResource("2_5ihn1")
+
+[node name="Sprite2D" parent="." index="0"]
+texture = ExtResource("2_qwit3")
+hframes = 4
+vframes = 7
