@@ -36,9 +36,8 @@ var base_idle_duration_min: float
 var base_idle_duration_max: float
 var base_attack_damage: int
 
-# ===== NEW ATTACK REGISTRY SYSTEM =====
-# Dictionary of attack_key -> { "direction": String, "tell_anim": String, "attack_anim": String }
-# Example: "claw_left" -> { "direction": "left", "tell_anim": "tell_claw_left", "attack_anim": "claw_left" }
+# ===== ATTACK REGISTRY SYSTEM =====
+# Dictionary of attack_key -> { "direction": String, "tell_anim": String, "attack_anim": String, "sound": String }
 var attack_registry: Dictionary = {}
 
 # Array of attack keys that can be chosen (can have duplicates for weighting)
@@ -51,6 +50,14 @@ var available_buffs: Array[String] = []
 var active_buffs: Dictionary = {}
 
 var hyper_armor: bool = true
+
+# ===== AUDIO =====
+const AUDIO_PATH = "res://Assets/Audio/"
+var background_music: String = ""  # Override in child classes (e.g., "wham.wav")
+
+# Audio players
+var music_player: AudioStreamPlayer
+var sfx_player: AudioStreamPlayer
 
 # Node references
 @onready var sprite: Sprite2D = $Sprite2D
@@ -81,8 +88,14 @@ func _ready() -> void:
 	base_idle_duration_max = idle_duration_max
 	base_attack_damage = attack_damage
 	
+	# Setup audio players
+	_setup_audio()
+	
 	# Setup attack registry (override in child classes)
 	_setup_attacks()
+	
+	# Start background music
+	_play_background_music()
 	
 	# Disable hitbox at start
 	disable_hitbox()
@@ -101,14 +114,69 @@ func _ready() -> void:
 	_update_hitbox_damage()
 
 
+# ===== AUDIO SETUP =====
+
+func _setup_audio() -> void:
+	# Create music player
+	music_player = AudioStreamPlayer.new()
+	music_player.name = "MusicPlayer"
+	music_player.bus = "Music"  # Make sure you have a Music bus, or use "Master"
+	add_child(music_player)
+	
+	# Create SFX player
+	sfx_player = AudioStreamPlayer.new()
+	sfx_player.name = "SFXPlayer"
+	sfx_player.bus = "SFX"  # Make sure you have an SFX bus, or use "Master"
+	add_child(sfx_player)
+
+
+func _play_background_music() -> void:
+	if background_music.is_empty():
+		return
+	
+	var music_path = AUDIO_PATH + background_music
+	if ResourceLoader.exists(music_path):
+		var music = load(music_path)
+		if music:
+			music_player.stream = music
+			music_player.play()
+	else:
+		push_warning("Background music not found: " + music_path)
+
+
+func stop_background_music() -> void:
+	if music_player:
+		music_player.stop()
+
+
+func play_sound(sound_file: String) -> void:
+	if sound_file.is_empty():
+		return
+	
+	var sound_path = AUDIO_PATH + sound_file
+	if ResourceLoader.exists(sound_path):
+		var sound = load(sound_path)
+		if sound:
+			sfx_player.stream = sound
+			sfx_player.play()
+	else:
+		push_warning("Sound not found: " + sound_path)
+
+
+func play_attack_sound(attack_key: String) -> void:
+	var attack_data = get_attack_data(attack_key)
+	if attack_data.has("sound") and not attack_data["sound"].is_empty():
+		play_sound(attack_data["sound"])
+
+
 # ===== ATTACK REGISTRY SETUP =====
 # Override this in child classes to define attacks
 func _setup_attacks() -> void:
 	# Default simple attacks (for backwards compatibility)
 	# Child classes should override this completely
-	register_attack("left", "left", "telegraph_left", "attack_left")
-	register_attack("right", "right", "telegraph_right", "attack_right")
-	register_attack("overhead", "overhead", "telegraph_overhead", "attack_overhead")
+	register_attack("left", "left", "telegraph_left", "attack_left", "")
+	register_attack("right", "right", "telegraph_right", "attack_right", "")
+	register_attack("overhead", "overhead", "telegraph_overhead", "attack_overhead", "")
 	available_attacks = ["left", "right"]
 
 
@@ -117,11 +185,13 @@ func _setup_attacks() -> void:
 # direction: which player hurtbox it targets ("left", "right", "overhead")
 # tell_anim: animation name for telegraph (e.g., "tell_claw_left")
 # attack_anim: animation name for attack (e.g., "claw_left")
-func register_attack(attack_key: String, direction: String, tell_anim: String, attack_anim: String) -> void:
+# sound: sound file to play on attack (e.g., "claw.wav") - can be empty
+func register_attack(attack_key: String, direction: String, tell_anim: String, attack_anim: String, sound: String = "") -> void:
 	attack_registry[attack_key] = {
 		"direction": direction,
 		"tell_anim": tell_anim,
-		"attack_anim": attack_anim
+		"attack_anim": attack_anim,
+		"sound": sound
 	}
 
 
@@ -133,7 +203,8 @@ func get_attack_data(attack_key: String) -> Dictionary:
 	return {
 		"direction": attack_key,
 		"tell_anim": "telegraph_" + attack_key,
-		"attack_anim": "attack_" + attack_key
+		"attack_anim": "attack_" + attack_key,
+		"sound": ""
 	}
 
 
@@ -196,6 +267,7 @@ func take_damage(amount: int) -> void:
 		if current_phase < max_phases:
 			trigger_phase_transition()
 		else:
+			play_sound("explosion-8-bit-2-314685.wav")
 			died.emit()
 			state_machine.change_state("DieState")
 	else:
@@ -204,6 +276,7 @@ func take_damage(amount: int) -> void:
 			flash_white()
 		else:
 			state_machine.change_state("HitState")
+
 
 func heal(amount: int) -> void:
 	current_hp = min(max_hp, current_hp + amount)
@@ -309,6 +382,9 @@ func play_attack_animation(attack_key: String) -> void:
 		anim_player.play(anim_name)
 	elif anim_player.has_animation("attack"):
 		anim_player.play("attack")
+	
+	# Play attack sound
+	play_attack_sound(attack_key)
 
 
 func play_telegraph_animation(attack_key: String) -> void:

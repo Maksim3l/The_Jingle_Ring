@@ -6,6 +6,7 @@ extends Control
 @onready var quit_button: Button = $LeftContainer/QuitBtn
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 @onready var snowflake_strip: TextureRect = $SnowflakeStrip
+@export var music_filename: String = "victory.wav" 
 
 var ranking_tween: Tween
 var snowflake_offset: float = 0.0
@@ -25,6 +26,15 @@ func _ready() -> void:
 	quit_button.pressed.connect(_on_quit_pressed)
 	
 	# Play transition, then victory
+	var player = AudioStreamPlayer.new()
+	player.bus = "Music"
+	add_child(player)
+	
+	var path = "res://Assets/Audio/" + music_filename
+	if ResourceLoader.exists(path):
+		player.stream = load(path)
+		player.play()
+	
 	anim_player.play("transition")
 	anim_player.animation_finished.connect(_on_animation_finished)
 	

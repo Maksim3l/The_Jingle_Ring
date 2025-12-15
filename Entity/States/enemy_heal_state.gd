@@ -17,7 +17,7 @@ func enter() -> void:
 	is_healing = true
 	
 	# Calculate heal amount (heal to 50% of max HP)
-	heal_amount = int(enemy.max_hp * 0.5)
+	heal_amount = int(enemy.max_hp * 0.1)
 	
 	# Play heal animation
 	enemy.anim_player.play("heal")

@@ -3,6 +3,8 @@ extends Node2D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var story_label: RichTextLabel = $OverlayLayer/StoryText
 @onready var difficulty_container: Control = $OverlayLayer/DifficultySelect/VBoxContainer
+@onready var music_player: AudioStreamPlayer = AudioStreamPlayer.new()
+const INTRO_MUSIC = preload("res://Assets/Audio/hamon intro.wav")
 
 @export_multiline var story_text: String = "
 An ancient and insidious power...
@@ -31,6 +33,10 @@ func _ready() -> void:
 	story_label.bbcode_enabled = true
 	story_label.text = ""
 	difficulty_container.hide()
+	add_child(music_player)
+	music_player.bus = "Music"
+	music_player.stream = INTRO_MUSIC
+	music_player.play()
 	_start_typewriter()
 
 

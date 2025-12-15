@@ -8,6 +8,7 @@ func enter() -> void:
 	is_attacking = true
 	
 	# Cycle between left and right
+	owner.play_attack_sound()
 	if is_left:
 		player.anim_player.play("attack_light_left")
 	else:

@@ -16,24 +16,30 @@ func _ready() -> void:
 	buff_chance = 0.0
 	available_buffs = []
 	
+	# Background music for this enemy
+	background_music = "wham.wav"
+	
 	super._ready()
 
 
 func _setup_attacks() -> void:
-	# Wham uses simple direction-based attacks
-	# If you have animations like "telegraph_left", "attack_left", use this format:
-	register_attack("left", "left", "telegraph_left", "attack_left")
-	register_attack("right", "right", "telegraph_right", "attack_right")
-	register_attack("overhead", "overhead", "telegraph_overhead", "attack_overhead")
+	# Register Wham's attacks with sounds
+	# Format: register_attack(attack_key, direction, tell_anim, attack_anim, sound)
 	
-	# Phase 1: Mostly left/right, rare overhead (weighted)
-	available_attacks = ["left", "right", "left", "right", "overhead"]
+	# Cork attack - shoots overhead
+	register_attack("cork", "left", "tell_cork", "attack_cork", "cork pop.wav")
+	
+	# Bottle attack - swings left/right (we'll make it hit left for now)
+	register_attack("bottle", "overhead", "tell_bottle", "attack_bottle", "bottle toss.wav")
+	
+	# Phase 1: Mostly cork, some bottle
+	available_attacks = ["cork", "cork", "bottle"]
 
 
 func _on_phase_changed() -> void:
 	match current_phase:
 		2:
-			# Stage 2: Faster, more HP, more overhead
+			# Stage 2: Faster, more HP
 			max_hp = 50
 			current_hp = max_hp
 			
@@ -41,8 +47,8 @@ func _on_phase_changed() -> void:
 			idle_duration_min = 0.8
 			idle_duration_max = 1.2
 			
-			# More overhead attacks now
-			available_attacks = ["left", "right", "overhead", "left", "right", "overhead"]
+			# Phase 2: More aggressive mix
+			available_attacks = ["cork", "bottle", "cork", "bottle"]
 			
 			# Update base stats
 			base_telegraph_duration = telegraph_duration

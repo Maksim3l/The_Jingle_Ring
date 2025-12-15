@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 GameManager="*res://Utility/Autoload/game_manager.gd"
 ScreenManager="*res://Utility/Autoload/screen_manager.gd"
+AudioManager="*res://Utility/Autoload/audio_manager.gd"
 
 [display]
 

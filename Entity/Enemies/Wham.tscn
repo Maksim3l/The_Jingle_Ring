@@ -4,22 +4,6 @@
 [ext_resource type="Script" uid="uid://sv7wnvx6h4ti" path="res://Entity/Enemies/wham.gd" id="2_g8r54"]
 [ext_resource type="Texture2D" uid="uid://jt1cyfbklyrk" path="res://Assets/Images/Enemy/WHAM-Sheet.png" id="3_216r3"]
 
-[sub_resource type="Animation" id="Animation_2mjgu"]
-resource_name = "hit"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.06666667, 0.13333334, 0.23333333),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 1,
-"values": [28, 29, 30, 31]
-}
-
 [sub_resource type="Animation" id="Animation_5x6ao"]
 length = 0.001
 tracks/0/type = "value"
@@ -35,55 +19,8 @@ tracks/0/keys = {
 "values": [0]
 }
 
-[sub_resource type="Animation" id="Animation_yd7ke"]
-resource_name = "idle"
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0.03472111, 0.26805446, 0.5, 0.73333335),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3]
-}
-
-[sub_resource type="Animation" id="Animation_80bkm"]
-resource_name = "death"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.13333334, 0.26666668, 0.36666667, 0.46666667),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 1,
-"values": [8, 9, 10, 11, 7]
-}
-
-[sub_resource type="Animation" id="Animation_n0a2c"]
-resource_name = "tell_cork"
-length = 0.7
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.09315759, 0.20000002, 0.2931576, 0.36666667, 0.43333334, 0.53333336, 0.6333333),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [12, 13, 16, 13, 16, 13, 16, 13]
-}
-
-[sub_resource type="Animation" id="Animation_tjerr"]
-resource_name = "tell_bottle"
+[sub_resource type="Animation" id="Animation_r84vn"]
+resource_name = "attack_bottle"
 length = 0.5
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -92,10 +29,10 @@ tracks/0/path = NodePath("Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.16666667, 0.3, 0.43333334),
+"times": PackedFloat32Array(0, 0.1, 0.26666668, 0.43333334),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
-"values": [16, 17, 18, 19]
+"values": [24, 25, 26, 28]
 }
 
 [sub_resource type="Animation" id="Animation_qlvel"]
@@ -114,8 +51,55 @@ tracks/0/keys = {
 "values": [19, 21, 22, 23]
 }
 
-[sub_resource type="Animation" id="Animation_r84vn"]
-resource_name = "attack_bottle"
+[sub_resource type="Animation" id="Animation_80bkm"]
+resource_name = "death"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.13333334, 0.26666668, 0.36666667, 0.46666667),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [8, 9, 10, 11, 7]
+}
+
+[sub_resource type="Animation" id="Animation_2mjgu"]
+resource_name = "hit"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.06666667, 0.13333334, 0.23333333),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [28, 29, 30, 31]
+}
+
+[sub_resource type="Animation" id="Animation_yd7ke"]
+resource_name = "idle"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.03472111, 0.26805446, 0.5, 0.73333335),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
+}
+
+[sub_resource type="Animation" id="Animation_tjerr"]
+resource_name = "tell_bottle"
 length = 0.5
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -124,10 +108,26 @@ tracks/0/path = NodePath("Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.26666668, 0.43333334),
+"times": PackedFloat32Array(0, 0.16666667, 0.3, 0.43333334),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
-"values": [24, 25, 26, 28]
+"values": [16, 17, 18, 19]
+}
+
+[sub_resource type="Animation" id="Animation_n0a2c"]
+resource_name = "tell_cork"
+length = 0.7
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.09315759, 0.20000002, 0.2931576, 0.36666667, 0.43333334, 0.53333336, 0.6333333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [12, 13, 16, 13, 16, 13, 16, 13]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ck66w"]

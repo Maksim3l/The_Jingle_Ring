@@ -3,12 +3,22 @@ extends Control
 @onready var retry_button: Button = $VBoxContainer/RetryBtn
 @onready var quit_button: Button = $VBoxContainer/QuitBtn
 @onready var anim_player: AnimationPlayer = $AnimationPlayer 
+@export var music_filename: String = "ded.mp3" 
+
 
 func _ready() -> void:
 	retry_button.pressed.connect(_on_retry_pressed)
 	quit_button.pressed.connect(_on_quit_pressed)
 	retry_button.disabled = true
 	quit_button.disabled = true
+	var player = AudioStreamPlayer.new()
+	player.bus = "Music"
+	add_child(player)
+	
+	var path = "res://Assets/Audio/" + music_filename
+	if ResourceLoader.exists(path):
+		player.stream = load(path)
+		player.play()
 	anim_player.play("transition")
 	retry_button.disabled = false
 	quit_button.disabled = false

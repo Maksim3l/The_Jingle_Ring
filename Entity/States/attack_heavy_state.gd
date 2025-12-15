@@ -3,13 +3,14 @@ extends State
 var is_left: bool = true
 var is_attacking: bool = false
 
-@export var heavy_damage_multiplier: float = 2.0
+@export var heavy_damage_multiplier: float = 4.0
 
 func enter() -> void:
 	player.set_hurtboxes(true, true, true)
 	is_attacking = true
 	
 	# Cycle between left and right
+	owner.play_attack_sound()
 	if is_left:
 		player.anim_player.play("attack_heavy_left")
 	else:

@@ -20,6 +20,8 @@ signal died
 
 @onready var blood_particles: GPUParticles2D = $BloodParticles
 @onready var state_machine: StateMachine = $StateMachine
+@onready var sfx_player: AudioStreamPlayer = AudioStreamPlayer.new()
+const PUNCH_SOUND = preload("res://Assets/Audio/punch.wav")
 
 var original_position: Vector2
 var hit_tween: Tween
@@ -30,6 +32,8 @@ func _ready() -> void:
 	hitbox_shape.disabled = true
 	blood_particles.emitting = false
 	original_position = position
+	sfx_player.bus = "SFX"
+	add_child(sfx_player)
 	
 	# Connect hurtbox signals
 	hurtbox_left.area_entered.connect(_on_hurtbox_hit.bind("left"))
@@ -73,6 +77,10 @@ func take_damage(damage: int, direction: String = "center") -> void:
 
 
 # ===== HIT FEEDBACK METHODS =====
+
+func play_attack_sound() -> void:
+	sfx_player.stream = PUNCH_SOUND
+	sfx_player.play()
 
 func flash_red() -> void:
 	if hit_tween and hit_tween.is_valid():
