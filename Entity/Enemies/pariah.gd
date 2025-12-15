@@ -3,9 +3,9 @@ class_name PariahScary
 
 
 func _ready() -> void:
-	max_hp = 10
+	max_hp = 100
 	attack_damage = 1
-	telegraph_duration = 0.4
+	telegraph_duration = 0.8
 	idle_duration_min = 0.8
 	idle_duration_max = 1.5
 	score_value = 10000
@@ -15,13 +15,31 @@ func _ready() -> void:
 	buff_chance = 0.15
 	buff_duration = 1.2
 	
-	# Only left and right attacks
-	available_attacks = ["left", "right"]
-	
 	# Only heal buff
 	available_buffs = ["heal"]
 	
 	super._ready()
+
+
+func _setup_attacks() -> void:
+	# Register Pariah's unique attacks
+	# Format: register_attack(attack_key, direction, tell_anim, attack_anim)
+	
+	# Claw attacks
+	register_attack("claw_left", "left", "tell_claw_left", "claw_left")
+	register_attack("claw_right", "right", "tell_claw_right", "claw_right")
+	
+	# Kick attacks
+	register_attack("kick_left", "left", "tell_kick_left", "kick_left")
+	register_attack("kick_right", "right", "tell_kick_right", "kicl_right")  # Note: typo in animation name
+	
+	# Set available attacks (can weight by adding duplicates)
+	# Phase 1: Mix of claws and kicks
+	available_attacks = [
+		"claw_left", "claw_right",
+		"claw_left", "claw_right",  # Claws more common
+		"kick_left", "kick_right"
+	]
 
 
 func _on_phase_changed() -> void:

@@ -10,18 +10,14 @@ func enter() -> void:
 	is_attacking = true
 	attack_connected = false
 	
-	# Get the attack type that was chosen in telegraph state
-	var attack_type: String = enemy.current_attack_type
+	# Get the attack key that was chosen in telegraph state (e.g., "claw_left")
+	var attack_key: String = enemy.current_attack_type
 	
-	# Play attack animation
-	var anim_name: String = "attack_" + attack_type
-	if enemy.anim_player.has_animation(anim_name):
-		enemy.anim_player.play(anim_name)
-	else:
-		enemy.anim_player.play("attack")
+	# Play attack animation using the new system
+	enemy.play_attack_animation(attack_key)
 	
-	# Enable the appropriate hitbox
-	enemy.enable_hitbox(attack_type)
+	# Enable the hitbox (direction is looked up from attack registry)
+	enemy.enable_hitbox(attack_key)
 	
 	# Connect to animation finished
 	if not enemy.anim_player.animation_finished.is_connected(_on_animation_finished):
@@ -29,8 +25,9 @@ func enter() -> void:
 		attack_connected = true
 
 
-func _on_animation_finished(anim_name: String) -> void:
-	if anim_name.begins_with("attack") and is_attacking:
+func _on_animation_finished(_anim_name: String) -> void:
+	# Any animation finishing while attacking means we're done
+	if is_attacking:
 		transitioned.emit(self, "IdleState")
 
 

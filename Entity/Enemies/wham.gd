@@ -7,8 +7,8 @@ func _ready() -> void:
 	max_hp = 5
 	attack_damage = 1
 	telegraph_duration = 1.0  # Very long telegraph
-	idle_duration_min = 1.6
-	idle_duration_max = 2.2
+	idle_duration_min = 1
+	idle_duration_max = 2
 	score_value = 1000
 	max_phases = 2
 	
@@ -16,10 +16,18 @@ func _ready() -> void:
 	buff_chance = 0.0
 	available_buffs = []
 	
-	# Mostly left/right, rare overhead
-	available_attacks = ["left", "right", "left", "right", "overhead"]  # Weighted: overhead is rare
-	
 	super._ready()
+
+
+func _setup_attacks() -> void:
+	# Wham uses simple direction-based attacks
+	# If you have animations like "telegraph_left", "attack_left", use this format:
+	register_attack("left", "left", "telegraph_left", "attack_left")
+	register_attack("right", "right", "telegraph_right", "attack_right")
+	register_attack("overhead", "overhead", "telegraph_overhead", "attack_overhead")
+	
+	# Phase 1: Mostly left/right, rare overhead (weighted)
+	available_attacks = ["left", "right", "left", "right", "overhead"]
 
 
 func _on_phase_changed() -> void:

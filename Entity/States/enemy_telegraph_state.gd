@@ -1,7 +1,7 @@
 extends State
 
 var telegraph_timer: float = 0.0
-var attack_type: String = ""
+var attack_key: String = ""
 var enemy: Enemy
 var is_telegraphing: bool = false
 
@@ -11,19 +11,14 @@ func enter() -> void:
 	telegraph_timer = 0.0
 	is_telegraphing = true
 	
-	# Choose which attack to telegraph
-	attack_type = enemy.choose_attack()
+	# Choose which attack to telegraph (returns attack key like "claw_left")
+	attack_key = enemy.choose_attack()
 	
-	# Play telegraph animation based on attack type
-	var anim_name: String = "telegraph_" + attack_type
-	if enemy.anim_player.has_animation(anim_name):
-		enemy.anim_player.play(anim_name)
-	elif enemy.anim_player.has_animation("telegraph"):
-		enemy.anim_player.play("telegraph")
-	# If no telegraph animation exists, just stay in current pose
+	# Play telegraph animation using the new system
+	enemy.play_telegraph_animation(attack_key)
 	
-	# Show tell indicator using enemy's method
-	enemy.show_tell(attack_type)
+	# Show tell indicator (still uses attack key, enemy handles animation lookup)
+	enemy.show_tell(attack_key)
 
 
 func update(delta: float) -> void:

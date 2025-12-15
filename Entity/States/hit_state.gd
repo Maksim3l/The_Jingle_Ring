@@ -11,11 +11,13 @@ func enter() -> void:
 	timer = 0.0
 	
 	player.set_hurtboxes(true, true, true)
-	player.anim_player.play("hit")
-	
-	# Trigger ALL feedback effects
-	player.play_all_hit_feedback()
 
+	if player.last_hit_direction == "right":
+		player.anim_player.play("hit_right")
+	else:
+		player.anim_player.play("hit_left")
+	
+	player.play_all_hit_feedback()
 
 func update(delta: float) -> void:
 	timer += delta

@@ -23,6 +23,7 @@ signal died
 
 var original_position: Vector2
 var hit_tween: Tween
+var last_hit_direction: String
 
 
 func _ready() -> void:
@@ -65,7 +66,8 @@ func _on_hitbox_hit(_area: Area2D) -> void:
 	GameManager.register_hit(hit_type)
 
 
-func take_damage(damage: int, _direction: String = "center") -> void:
+func take_damage(damage: int, direction: String = "center") -> void:
+	last_hit_direction = direction
 	GameManager.take_damage(damage)
 	state_machine.change_state("HitState")
 

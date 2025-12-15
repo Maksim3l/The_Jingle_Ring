@@ -26,7 +26,8 @@ signal buff_interrupted(buff_type: String)
 
 var current_hp: int
 var current_phase: int = 1
-var current_attack_type: String = ""
+var current_attack_type: String = ""  # This is now the attack KEY (e.g., "claw_left")
+var current_attack_direction: String = ""  # This is the direction (e.g., "left")
 var current_buff_type: String = ""
 
 # Base stats (for resetting buffs)
@@ -35,14 +36,21 @@ var base_idle_duration_min: float
 var base_idle_duration_max: float
 var base_attack_damage: int
 
-# Attack types this enemy can use
-var available_attacks: Array[String] = ["left", "right", "overhead"]
+# ===== NEW ATTACK REGISTRY SYSTEM =====
+# Dictionary of attack_key -> { "direction": String, "tell_anim": String, "attack_anim": String }
+# Example: "claw_left" -> { "direction": "left", "tell_anim": "tell_claw_left", "attack_anim": "claw_left" }
+var attack_registry: Dictionary = {}
+
+# Array of attack keys that can be chosen (can have duplicates for weighting)
+var available_attacks: Array[String] = []
 
 # Buff types this enemy can use
 var available_buffs: Array[String] = []
 
 # Active buffs tracking
 var active_buffs: Dictionary = {}
+
+var hyper_armor: bool = true
 
 # Node references
 @onready var sprite: Sprite2D = $Sprite2D
@@ -73,6 +81,9 @@ func _ready() -> void:
 	base_idle_duration_max = idle_duration_max
 	base_attack_damage = attack_damage
 	
+	# Setup attack registry (override in child classes)
+	_setup_attacks()
+	
 	# Disable hitbox at start
 	disable_hitbox()
 	
@@ -90,6 +101,42 @@ func _ready() -> void:
 	_update_hitbox_damage()
 
 
+# ===== ATTACK REGISTRY SETUP =====
+# Override this in child classes to define attacks
+func _setup_attacks() -> void:
+	# Default simple attacks (for backwards compatibility)
+	# Child classes should override this completely
+	register_attack("left", "left", "telegraph_left", "attack_left")
+	register_attack("right", "right", "telegraph_right", "attack_right")
+	register_attack("overhead", "overhead", "telegraph_overhead", "attack_overhead")
+	available_attacks = ["left", "right"]
+
+
+# Helper to register an attack
+# attack_key: unique identifier for this attack (e.g., "claw_left", "kick_right")
+# direction: which player hurtbox it targets ("left", "right", "overhead")
+# tell_anim: animation name for telegraph (e.g., "tell_claw_left")
+# attack_anim: animation name for attack (e.g., "claw_left")
+func register_attack(attack_key: String, direction: String, tell_anim: String, attack_anim: String) -> void:
+	attack_registry[attack_key] = {
+		"direction": direction,
+		"tell_anim": tell_anim,
+		"attack_anim": attack_anim
+	}
+
+
+# Get attack data from registry
+func get_attack_data(attack_key: String) -> Dictionary:
+	if attack_registry.has(attack_key):
+		return attack_registry[attack_key]
+	# Fallback for simple direction-based attacks
+	return {
+		"direction": attack_key,
+		"tell_anim": "telegraph_" + attack_key,
+		"attack_anim": "attack_" + attack_key
+	}
+
+
 func _update_hitbox_damage() -> void:
 	if hitbox:
 		hitbox.set_meta("damage", attack_damage)
@@ -100,11 +147,12 @@ func _update_health_bar() -> void:
 		health_bar.value = get_hp_percentage() * 100.0
 
 
-# ===== TELL SYSTEM (uses animations, not sprites) =====
+# ===== TELL SYSTEM =====
 
-func show_tell(direction: String) -> void:
-	# Play telegraph animation based on direction
-	var anim_name = "telegraph_" + direction
+func show_tell(attack_key: String) -> void:
+	var attack_data = get_attack_data(attack_key)
+	var anim_name = attack_data["tell_anim"]
+	
 	if anim_player.has_animation(anim_name):
 		anim_player.play(anim_name)
 	elif anim_player.has_animation("telegraph"):
@@ -130,11 +178,9 @@ func _on_hurtbox_hit(area: Area2D) -> void:
 
 
 func take_damage(amount: int) -> void:
-	# Ignore damage if already dead
 	if current_hp <= 0:
 		return
 	
-	# Apply damage reduction from buffs
 	var actual_damage: int = int(amount * get_damage_reduction())
 	actual_damage = max(1, actual_damage)
 	
@@ -143,7 +189,6 @@ func take_damage(amount: int) -> void:
 	
 	_update_health_bar()
 	
-	# Interrupt buff if currently buffing
 	if is_buffing():
 		interrupt_buff()
 	
@@ -151,11 +196,14 @@ func take_damage(amount: int) -> void:
 		if current_phase < max_phases:
 			trigger_phase_transition()
 		else:
-			died.emit()  # Emit ONCE here, before entering DieState
+			died.emit()
 			state_machine.change_state("DieState")
 	else:
-		state_machine.change_state("HitState")
-		
+		# Hyper armor: just flash, don't change state
+		if hyper_armor:
+			flash_white()
+		else:
+			state_machine.change_state("HitState")
 
 func heal(amount: int) -> void:
 	current_hp = min(max_hp, current_hp + amount)
@@ -192,7 +240,13 @@ func choose_action() -> String:
 
 
 func choose_attack() -> String:
+	# Choose from available attack keys
 	current_attack_type = available_attacks[randi() % available_attacks.size()]
+	
+	# Get the direction from the attack data
+	var attack_data = get_attack_data(current_attack_type)
+	current_attack_direction = attack_data["direction"]
+	
 	return current_attack_type
 
 
@@ -207,12 +261,16 @@ func choose_buff() -> String:
 # Layer 2 = PlayerHurtboxRight
 # Layer 3 = PlayerHurtboxOverhead
 
-func enable_hitbox(attack_type: String) -> void:
+func enable_hitbox(attack_key: String) -> void:
 	if not hitbox or not hitbox_shape:
 		return
 	
+	# Get the direction from attack data
+	var attack_data = get_attack_data(attack_key)
+	var direction = attack_data["direction"]
+	
 	# Set collision mask based on attack direction
-	match attack_type:
+	match direction:
 		"left":
 			hitbox.collision_mask = 1  # Layer 1: PlayerHurtboxLeft
 		"right":
@@ -223,8 +281,9 @@ func enable_hitbox(attack_type: String) -> void:
 	# Enable the hitbox
 	hitbox_shape.disabled = false
 	
-	current_attack_type = attack_type
-	attack_started.emit(attack_type)
+	current_attack_type = attack_key
+	current_attack_direction = direction
+	attack_started.emit(attack_key)
 
 
 func disable_hitbox() -> void:
@@ -238,6 +297,28 @@ func disable_all_hitboxes() -> void:
 
 func _on_attack_landed(_area: Area2D) -> void:
 	attack_landed.emit()
+
+
+# ===== ANIMATION HELPERS =====
+
+func play_attack_animation(attack_key: String) -> void:
+	var attack_data = get_attack_data(attack_key)
+	var anim_name = attack_data["attack_anim"]
+	
+	if anim_player.has_animation(anim_name):
+		anim_player.play(anim_name)
+	elif anim_player.has_animation("attack"):
+		anim_player.play("attack")
+
+
+func play_telegraph_animation(attack_key: String) -> void:
+	var attack_data = get_attack_data(attack_key)
+	var anim_name = attack_data["tell_anim"]
+	
+	if anim_player.has_animation(anim_name):
+		anim_player.play(anim_name)
+	elif anim_player.has_animation("telegraph"):
+		anim_player.play("telegraph")
 
 
 # ===== BUFF SYSTEM =====
