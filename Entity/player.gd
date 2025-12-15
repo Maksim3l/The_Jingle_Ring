@@ -10,6 +10,7 @@ signal died
 @onready var hitbox: Area2D = $Hitbox
 @onready var hitbox_shape: CollisionShape2D = $Hitbox/CollisionShape2D
 
+# Make sure these match your scene node names exactly
 @onready var hurtbox_left: Area2D = $HurtBoxLeft
 @onready var hurtbox_left_shape: CollisionShape2D = $HurtBoxLeft/CollisionShape2D
 @onready var hurtbox_right: Area2D = $HurtBoxRight
@@ -22,6 +23,7 @@ signal died
 
 var original_position: Vector2
 var hit_tween: Tween
+
 
 func _ready() -> void:
 	hitbox_shape.disabled = true
@@ -38,7 +40,6 @@ func _ready() -> void:
 
 
 func _on_hurtbox_hit(area: Area2D, direction: String) -> void:
-	# Only take damage if game is playing
 	if not GameManager.is_playing():
 		return
 	
@@ -49,28 +50,23 @@ func _on_hurtbox_hit(area: Area2D, direction: String) -> void:
 	take_damage(damage, direction)
 
 
-func _on_hitbox_hit(area: Area2D) -> void:
-	# Check if we hit an enemy hurtbox
+func _on_hitbox_hit(_area: Area2D) -> void:
 	if not GameManager.is_playing():
 		return
 	
 	# Determine hit type based on current state
 	var hit_type: String = "light_hit"
-	var current_state_name: String = state_machine.current_state.name.to_lower()
-	
-	if "heavy" in current_state_name:
-		hit_type = "heavy_hit"
-	elif "star" in current_state_name:
-		hit_type = "star_punch"
+	if state_machine.current_state:
+		var current_state_name: String = state_machine.current_state.name.to_lower()
+		
+		if "heavy" in current_state_name:
+			hit_type = "heavy_hit"
 	
 	GameManager.register_hit(hit_type)
 
 
 func take_damage(damage: int, _direction: String = "center") -> void:
-	# Tell GameManager to reduce HP (also breaks combo)
 	GameManager.take_damage(damage)
-	
-	# Force transition to hit state
 	state_machine.change_state("HitState")
 
 
@@ -110,14 +106,3 @@ func set_hurtboxes(left: bool, right: bool, overhead: bool) -> void:
 	hurtbox_left_shape.disabled = not left
 	hurtbox_right_shape.disabled = not right
 	hurtbox_overhead_shape.disabled = not overhead
-
-
-# ===== STAR PUNCH =====
-
-func can_star_punch() -> bool:
-	return GameManager.has_stars()
-
-
-func do_star_punch() -> void:
-	if GameManager.use_star():
-		state_machine.change_state("StarPunchState")

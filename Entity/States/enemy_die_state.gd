@@ -24,9 +24,6 @@ func enter() -> void:
 	
 	# Award knockout score
 	GameManager.add_score(GameManager.SCORE_VALUES["knockout"])
-	
-	# Emit died signal
-	enemy.died.emit()
 
 
 func _on_animation_finished(anim_name: String) -> void:

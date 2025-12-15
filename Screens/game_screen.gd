@@ -9,6 +9,7 @@ signal all_fights_complete
 
 # Enemy scenes to spawn in order
 @export var enemy_scenes: Array[PackedScene] = []
+@export var auto_start: bool = true  # Set false if you want to trigger start_game() manually
 
 # Node references
 @onready var player: Player = $Player
@@ -17,6 +18,7 @@ signal all_fights_complete
 @onready var health_display: Control = $UILayer/HealthDisplay
 @onready var score_display: Control = $UILayer/ScoreDisplay
 @onready var pause_menu: Control = $UILayer/PauseMenu
+@onready var controls_popup: Control = $UILayer/ControlsPopup
 
 # Current fight state
 var current_enemy: Enemy = null
@@ -26,7 +28,6 @@ var is_fight_active: bool = false
 # Enemy scene paths (set these in the editor or here)
 const ENEMY_PATHS := [
 	"res://Entity/Enemies/Wham.tscn",
-	"res://Entity/Enemies/Hells.tscn",
 	"res://Entity/Enemies/Pariah.tscn"
 ]
 
@@ -52,21 +53,62 @@ func _ready() -> void:
 	
 	# Position player
 	if player:
-		player.position = $Entities/PlayerPosition.position if $Entities/PlayerPosition else Vector2(320, 280)
+		var player_marker = $Entities/PlayerPosition
+		if player_marker:
+			player.position = player_marker.position
+		else:
+			player.position = Vector2(320, 280)
+	
+	# Auto-start the game if enabled (shows controls first)
+	if auto_start:
+		call_deferred("_show_controls_popup")
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	# Handle controls popup dismissal with any attack button
+	if controls_popup and controls_popup.visible:
+		if event.is_action_pressed("attack_light") or \
+		   event.is_action_pressed("attack_heavy") or \
+		   event.is_action_pressed("ui_accept"):
+			_on_controls_dismissed()
+			get_viewport().set_input_as_handled()
+			return
+	
 	if event.is_action_pressed("pause"):
 		GameManager.toggle_pause()
 
 
+func _show_controls_popup() -> void:
+	"""Shows the controls popup before starting the game."""
+	if controls_popup:
+		controls_popup.visible = true
+		# Connect the start button
+		var start_btn = controls_popup.get_node_or_null("Panel/MarginContainer/VBoxContainer/StartButton")
+		if start_btn and not start_btn.pressed.is_connected(_on_controls_dismissed):
+			start_btn.pressed.connect(_on_controls_dismissed)
+	else:
+		# No popup, just start
+		start_game()
+
+
+func _on_controls_dismissed() -> void:
+	"""Called when player dismisses the controls popup."""
+	if controls_popup:
+		controls_popup.visible = false
+	start_game()
+
+
 func _load_enemy_scenes() -> void:
 	for path in ENEMY_PATHS:
-		var scene = load(path)
-		if scene:
-			enemy_scenes.append(scene)
+		if ResourceLoader.exists(path):
+			var scene = load(path)
+			if scene:
+				enemy_scenes.append(scene)
+				print("Loaded enemy: " + path)
+			else:
+				push_warning("Failed to load enemy scene: " + path)
 		else:
-			push_warning("Failed to load enemy scene: " + path)
+			push_warning("Enemy scene file not found: " + path)
 
 
 # ===== GAME FLOW =====
@@ -76,6 +118,8 @@ func start_game() -> void:
 	current_enemy_index = 0
 	GameManager.start_game()
 	
+	print("Game started! Enemy scenes loaded: " + str(enemy_scenes.size()))
+	
 	# Short delay then spawn first enemy
 	await get_tree().create_timer(0.5).timeout
 	spawn_next_enemy()
@@ -83,6 +127,10 @@ func start_game() -> void:
 
 func spawn_next_enemy() -> void:
 	"""Spawns the next enemy in the sequence."""
+	if enemy_scenes.is_empty():
+		push_error("No enemy scenes loaded! Check ENEMY_PATHS or assign in editor.")
+		return
+	
 	if current_enemy_index >= enemy_scenes.size():
 		# All enemies defeated!
 		_on_all_enemies_defeated()
@@ -106,16 +154,20 @@ func spawn_next_enemy() -> void:
 	$Entities.add_child(current_enemy)
 	
 	# Connect enemy signals
-	current_enemy.died.connect(_on_enemy_died)
-	current_enemy.phase_changed.connect(_on_enemy_phase_changed)
+	if current_enemy.has_signal("died"):
+		current_enemy.died.connect(_on_enemy_died)
+	if current_enemy.has_signal("phase_changed"):
+		current_enemy.phase_changed.connect(_on_enemy_phase_changed)
 	
 	# Start the fight
 	is_fight_active = true
 	fight_started.emit(current_enemy.name)
 	
 	# Initialize enemy state machine
-	if current_enemy.state_machine:
-		current_enemy.state_machine.change_state("IdleState")
+	if current_enemy.has_node("StateMachine"):
+		var sm = current_enemy.get_node("StateMachine")
+		if sm.has_method("change_state"):
+			sm.change_state("IdleState")
 	
 	print("Fight started: " + current_enemy.name)
 
@@ -137,9 +189,6 @@ func _on_enemy_died() -> void:
 func _on_enemy_phase_changed(new_phase: int) -> void:
 	"""Called when enemy enters a new phase."""
 	print(current_enemy.name + " entered phase " + str(new_phase))
-	
-	# Could add visual effects, brief pause, etc.
-	# Flash the screen or show "Phase 2!" text
 
 
 func _on_all_enemies_defeated() -> void:
@@ -151,52 +200,42 @@ func _on_all_enemies_defeated() -> void:
 func _on_player_died() -> void:
 	"""Called when player HP reaches 0."""
 	is_fight_active = false
-	
-	# Player death is handled by player's DieState
-	# Game over screen will be shown by UI
 
 
 # ===== UI UPDATES =====
 
 func _setup_ui() -> void:
 	"""Initialize UI components."""
-	# Update displays with initial values
 	_on_hp_changed(GameManager.current_hp, GameManager.max_hp)
 	_on_score_changed(GameManager.score)
 	_on_combo_changed(GameManager.combo)
 	_on_stars_changed(GameManager.stars)
 	
-	# Hide pause menu initially
 	if pause_menu:
 		pause_menu.visible = false
 
 
 func _on_hp_changed(current: int, maximum: int) -> void:
-	"""Update health display."""
 	if health_display and health_display.has_method("update_health"):
 		health_display.update_health(current, maximum)
 
 
 func _on_score_changed(new_score: int) -> void:
-	"""Update score display."""
 	if score_display and score_display.has_method("update_score"):
 		score_display.update_score(new_score)
 
 
 func _on_combo_changed(new_combo: int) -> void:
-	"""Update combo display."""
 	if score_display and score_display.has_method("update_combo"):
 		score_display.update_combo(new_combo)
 
 
 func _on_stars_changed(new_stars: int) -> void:
-	"""Update stars display."""
 	if health_display and health_display.has_method("update_stars"):
 		health_display.update_stars(new_stars)
 
 
 func _on_game_state_changed(new_state: GameManager.GameState) -> void:
-	"""Handle game state changes."""
 	match new_state:
 		GameManager.GameState.PAUSED:
 			_show_pause_menu()
@@ -219,29 +258,22 @@ func _hide_pause_menu() -> void:
 
 
 func _show_game_over() -> void:
-	"""Show the game over screen."""
-	# Could transition to a separate scene or show overlay
 	print("GAME OVER")
-	# ScreenManager.transition_to("res://Screens/game_over.tscn")
 
 
 func _show_victory() -> void:
-	"""Show the victory screen."""
 	print("VICTORY!")
 	var stats = GameManager.get_final_stats()
 	print("Final Score: ", stats.score)
 	print("Rating: ", stats.rating)
-	# ScreenManager.transition_to("res://Screens/victory.tscn")
 
 
 # ===== UTILITY =====
 
 func get_current_enemy() -> Enemy:
-	"""Returns the current enemy being fought."""
 	return current_enemy
 
 
 func restart_fight() -> void:
-	"""Restart the current fight (for retry functionality)."""
 	GameManager.start_game()
 	spawn_next_enemy()

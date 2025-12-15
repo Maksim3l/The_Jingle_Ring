@@ -50,22 +50,13 @@ var active_buffs: Dictionary = {}
 @onready var state_machine: StateMachine = $StateMachine
 @onready var health_bar: ProgressBar = $HealthBar
 
-# Hitboxes (enemy attacks player)
-@onready var hitbox_left: Area2D = $HitboxLeft
-@onready var hitbox_left_shape: CollisionShape2D = $HitboxLeft/CollisionShape2D
-@onready var hitbox_right: Area2D = $HitboxRight
-@onready var hitbox_right_shape: CollisionShape2D = $HitboxRight/CollisionShape2D
-@onready var hitbox_overhead: Area2D = $HitboxOverhead
-@onready var hitbox_overhead_shape: CollisionShape2D = $HitboxOverhead/CollisionShape2D
+# Single hitbox - collision mask changes based on attack type
+@onready var hitbox: Area2D = $HitBox
+@onready var hitbox_shape: CollisionShape2D = $HitBox/CollisionShape2D
 
 # Hurtbox (where player hits enemy)
 @onready var hurtbox: Area2D = $HurtBox
 @onready var hurtbox_shape: CollisionShape2D = $HurtBox/CollisionShape2D
-
-# Tell indicators
-@onready var tell_left: Sprite2D = $TellLeft
-@onready var tell_right: Sprite2D = $TellRight
-@onready var tell_overhead: Sprite2D = $TellOverhead
 
 var original_position: Vector2
 var hit_tween: Tween
@@ -82,11 +73,8 @@ func _ready() -> void:
 	base_idle_duration_max = idle_duration_max
 	base_attack_damage = attack_damage
 	
-	# Disable all hitboxes at start
-	disable_all_hitboxes()
-	
-	# Hide tell indicators
-	_hide_all_tells()
+	# Disable hitbox at start
+	disable_hitbox()
 	
 	# Update health bar
 	_update_health_bar()
@@ -95,29 +83,16 @@ func _ready() -> void:
 	if hurtbox:
 		hurtbox.area_entered.connect(_on_hurtbox_hit)
 	
-	# Connect hitbox signals
-	if hitbox_left:
-		hitbox_left.area_entered.connect(_on_attack_landed)
-	if hitbox_right:
-		hitbox_right.area_entered.connect(_on_attack_landed)
-	if hitbox_overhead:
-		hitbox_overhead.area_entered.connect(_on_attack_landed)
+	# Connect hitbox signal
+	if hitbox:
+		hitbox.area_entered.connect(_on_attack_landed)
 	
 	_update_hitbox_damage()
-	
-	# Initialize state machine
-	await get_tree().process_frame
-	if state_machine and state_machine.states.has("idlestate"):
-		state_machine.change_state("IdleState")
 
 
 func _update_hitbox_damage() -> void:
-	if hitbox_left:
-		hitbox_left.set_meta("damage", attack_damage)
-	if hitbox_right:
-		hitbox_right.set_meta("damage", attack_damage)
-	if hitbox_overhead:
-		hitbox_overhead.set_meta("damage", attack_damage)
+	if hitbox:
+		hitbox.set_meta("damage", attack_damage)
 
 
 func _update_health_bar() -> void:
@@ -125,13 +100,20 @@ func _update_health_bar() -> void:
 		health_bar.value = get_hp_percentage() * 100.0
 
 
-func _hide_all_tells() -> void:
-	if tell_left:
-		tell_left.visible = false
-	if tell_right:
-		tell_right.visible = false
-	if tell_overhead:
-		tell_overhead.visible = false
+# ===== TELL SYSTEM (uses animations, not sprites) =====
+
+func show_tell(direction: String) -> void:
+	# Play telegraph animation based on direction
+	var anim_name = "telegraph_" + direction
+	if anim_player.has_animation(anim_name):
+		anim_player.play(anim_name)
+	elif anim_player.has_animation("telegraph"):
+		anim_player.play("telegraph")
+
+
+func hide_tells() -> void:
+	# Nothing to hide - tells are animations
+	pass
 
 
 # ===== DAMAGE & HEALTH =====
@@ -148,6 +130,10 @@ func _on_hurtbox_hit(area: Area2D) -> void:
 
 
 func take_damage(amount: int) -> void:
+	# Ignore damage if already dead
+	if current_hp <= 0:
+		return
+	
 	# Apply damage reduction from buffs
 	var actual_damage: int = int(amount * get_damage_reduction())
 	actual_damage = max(1, actual_damage)
@@ -165,10 +151,11 @@ func take_damage(amount: int) -> void:
 		if current_phase < max_phases:
 			trigger_phase_transition()
 		else:
+			died.emit()  # Emit ONCE here, before entering DieState
 			state_machine.change_state("DieState")
 	else:
 		state_machine.change_state("HitState")
-
+		
 
 func heal(amount: int) -> void:
 	current_hp = min(max_hp, current_hp + amount)
@@ -215,62 +202,49 @@ func choose_buff() -> String:
 
 
 # ===== ATTACK SYSTEM =====
+# Single hitbox - we change the collision MASK to target different player hurtboxes
+# Layer 1 = PlayerHurtboxLeft
+# Layer 2 = PlayerHurtboxRight
+# Layer 3 = PlayerHurtboxOverhead
 
 func enable_hitbox(attack_type: String) -> void:
-	disable_all_hitboxes()
+	if not hitbox or not hitbox_shape:
+		return
 	
+	# Set collision mask based on attack direction
 	match attack_type:
 		"left":
-			if hitbox_left_shape:
-				hitbox_left_shape.disabled = false
+			hitbox.collision_mask = 1  # Layer 1: PlayerHurtboxLeft
 		"right":
-			if hitbox_right_shape:
-				hitbox_right_shape.disabled = false
+			hitbox.collision_mask = 2  # Layer 2: PlayerHurtboxRight
 		"overhead":
-			if hitbox_overhead_shape:
-				hitbox_overhead_shape.disabled = false
+			hitbox.collision_mask = 4  # Layer 3: PlayerHurtboxOverhead
+	
+	# Enable the hitbox
+	hitbox_shape.disabled = false
 	
 	current_attack_type = attack_type
 	attack_started.emit(attack_type)
 
 
+func disable_hitbox() -> void:
+	if hitbox_shape:
+		hitbox_shape.disabled = true
+
+
 func disable_all_hitboxes() -> void:
-	if hitbox_left_shape:
-		hitbox_left_shape.disabled = true
-	if hitbox_right_shape:
-		hitbox_right_shape.disabled = true
-	if hitbox_overhead_shape:
-		hitbox_overhead_shape.disabled = true
+	disable_hitbox()
 
 
 func _on_attack_landed(_area: Area2D) -> void:
 	attack_landed.emit()
 
 
-# ===== TELL INDICATORS =====
-
-func show_tell(direction: String) -> void:
-	_hide_all_tells()
-	
-	match direction:
-		"left":
-			if tell_left:
-				tell_left.visible = true
-		"right":
-			if tell_right:
-				tell_right.visible = true
-		"overhead":
-			if tell_overhead:
-				tell_overhead.visible = true
-
-
-func hide_tells() -> void:
-	_hide_all_tells()
-
-
 # ===== BUFF SYSTEM =====
 
 func is_buffing() -> bool:
+	if not state_machine or not state_machine.current_state:
+		return false
 	return current_buff_type != "" and state_machine.current_state.name == "BuffState"
 
 
@@ -438,19 +412,9 @@ func wobble() -> void:
 	wobble_tween.tween_property(self, "position:x", original_position.x, 0.05)
 
 
-func start_hit_particles() -> void:
-	# Override if you add hit particles
-	pass
-
-
-func stop_hit_particles() -> void:
-	pass
-
-
 func play_hit_feedback() -> void:
 	flash_white()
 	wobble()
-	start_hit_particles()
 
 
 # ===== UTILITY =====

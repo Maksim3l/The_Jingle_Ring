@@ -38,7 +38,6 @@ func update(delta: float) -> void:
 
 func exit() -> void:
 	is_stunned = false
-	enemy.stop_hit_particles()
 
 
 func _update_health_bar() -> void:

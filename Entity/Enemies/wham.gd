@@ -7,8 +7,8 @@ func _ready() -> void:
 	max_hp = 5
 	attack_damage = 1
 	telegraph_duration = 1.0  # Very long telegraph
-	idle_duration_min = 2.0
-	idle_duration_max = 3.0
+	idle_duration_min = 1.6
+	idle_duration_max = 2.2
 	score_value = 1000
 	max_phases = 2
 	
@@ -26,12 +26,12 @@ func _on_phase_changed() -> void:
 	match current_phase:
 		2:
 			# Stage 2: Faster, more HP, more overhead
-			max_hp = 8
+			max_hp = 50
 			current_hp = max_hp
 			
 			telegraph_duration = 0.6
-			idle_duration_min = 1.2
-			idle_duration_max = 2.0
+			idle_duration_min = 0.8
+			idle_duration_max = 1.2
 			
 			# More overhead attacks now
 			available_attacks = ["left", "right", "overhead", "left", "right", "overhead"]

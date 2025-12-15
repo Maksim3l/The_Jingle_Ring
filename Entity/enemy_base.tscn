@@ -1,6 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://cuqysyyv1q081"]
+[gd_scene load_steps=14 format=3 uid="uid://cuqysyyv1q081"]
 
 [ext_resource type="Script" uid="uid://bik7ewwxt6c0n" path="res://Entity/enemy_base.gd" id="1_1b3pc"]
+[ext_resource type="Texture2D" uid="uid://dwbifmw6lhpmc" path="res://Assets/Images/Enemy/blood_particle.png" id="2_dqrqh"]
+[ext_resource type="Script" uid="uid://h8fdfp6m5ldu" path="res://Entity/state_machine.gd" id="2_ke1iy"]
 [ext_resource type="Script" uid="uid://c7iygaanu54ug" path="res://Entity/States/enemy_idle_state.gd" id="2_oa3r6"]
 [ext_resource type="Script" uid="uid://oc8udbxb71u4" path="res://Entity/States/enemy_buff_state.gd" id="2_ybck8"]
 [ext_resource type="Script" uid="uid://dthb4qdqjs15q" path="res://Entity/States/enemy_telegraph_state.gd" id="3_ke1iy"]
@@ -13,13 +15,26 @@
 size = Vector2(99, 147)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ke1iy"]
-size = Vector2(105, 144)
+size = Vector2(142, 202)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_y7cyt"]
+particle_flag_disable_z = true
+emission_shape = 2
+emission_sphere_radius = 1.0
+direction = Vector3(0, -1, 0)
+initial_velocity_min = 100.0
+initial_velocity_max = 200.0
+gravity = Vector3(0, 1000, 0)
+scale_min = 0.099999994
+scale_max = 0.29999998
+color = Color(0.54313457, 1.3596937e-06, 3.3691526e-07, 1)
 
 [node name="EnemyBase" type="Node2D"]
 script = ExtResource("1_1b3pc")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, -80)
+scale = Vector2(2, 2)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 
@@ -36,17 +51,31 @@ collision_layer = 16
 collision_mask = 8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
-position = Vector2(-1.5, -72)
+position = Vector2(4, -100)
 shape = SubResource("RectangleShape2D_ke1iy")
 
 [node name="HealthBar" type="ProgressBar" parent="."]
-offset_left = -34.0
-offset_top = -171.0
-offset_right = 37.0
-offset_bottom = -144.0
+offset_left = -68.0
+offset_top = -196.0
+offset_right = 72.0
+offset_bottom = -169.0
 value = 100.0
 
+[node name="BloodParticles" type="GPUParticles2D" parent="."]
+position = Vector2(0, -120)
+emitting = false
+amount = 30
+texture = ExtResource("2_dqrqh")
+lifetime = 0.4
+one_shot = true
+explosiveness = 1.0
+randomness = 0.1
+trail_sections = 2
+trail_section_subdivisions = 1
+process_material = SubResource("ParticleProcessMaterial_y7cyt")
+
 [node name="StateMachine" type="Node" parent="."]
+script = ExtResource("2_ke1iy")
 
 [node name="IdleState" type="Node" parent="StateMachine"]
 script = ExtResource("2_oa3r6")

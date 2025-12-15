@@ -1,11 +1,14 @@
-[gd_scene load_steps=7 format=3 uid="uid://dp6crko2peg5g"]
+[gd_scene load_steps=10 format=3 uid="uid://dp6crko2peg5g"]
 
 [ext_resource type="Texture2D" uid="uid://cw7vs4riwbelp" path="res://Assets/Images/Background/FightRink.png" id="1_a116d"]
 [ext_resource type="PackedScene" uid="uid://baffuro53158g" path="res://Entity/player.tscn" id="1_uo11a"]
 [ext_resource type="Script" uid="uid://dqoa0gedlnrm2" path="res://Screens/game_screen.gd" id="1_wchbt"]
 [ext_resource type="Script" uid="uid://bc8eitk5fopjb" path="res://Screens/health_display.gd" id="4_hnpil"]
+[ext_resource type="Texture2D" uid="uid://coh5rtkojnroe" path="res://Assets/Images/UI/heart-full.png" id="5_bsbiy"]
 [ext_resource type="Script" uid="uid://gxr6mohkrtw8" path="res://Screens/score_display.gd" id="5_mcda4"]
 [ext_resource type="Script" uid="uid://8s3mivwy67g2" path="res://Screens/pause_menu.gd" id="6_cw4t1"]
+[ext_resource type="Texture2D" uid="uid://dgs1rtmlrcnui" path="res://Assets/Images/UI/heart-empty.png" id="6_pvual"]
+[ext_resource type="FontFile" uid="uid://cgxq0woteljiv" path="res://Assets/Fonts/alagard.ttf" id="7_pvcf7"]
 
 [node name="GameScreen" type="Node2D"]
 script = ExtResource("1_wchbt")
@@ -16,10 +19,8 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -320.0
-offset_top = -180.0
-offset_right = 320.0
-offset_bottom = 180.0
+offset_right = 640.0
+offset_bottom = 360.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_a116d")
@@ -27,44 +28,111 @@ texture = ExtResource("1_a116d")
 [node name="Entities" type="Node2D" parent="."]
 
 [node name="EnemySpawnPoint" type="Marker2D" parent="Entities"]
+position = Vector2(320, 200)
 
 [node name="PlayerPosition" type="Marker2D" parent="Entities"]
-position = Vector2(0, 180)
+position = Vector2(320, 360)
 
 [node name="Player" parent="." instance=ExtResource("1_uo11a")]
-base_damage = 10
+position = Vector2(320, 360)
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 
 [node name="HealthDisplay" type="Control" parent="UILayer"]
 layout_mode = 3
 anchors_preset = 0
-offset_left = -318.0
-offset_top = -178.0
-offset_right = -122.0
-offset_bottom = -138.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 206.0
+offset_bottom = 50.0
 script = ExtResource("4_hnpil")
+heart_full_texture = ExtResource("5_bsbiy")
+heart_empty_texture = ExtResource("6_pvual")
 
 [node name="ScoreDisplay" type="Control" parent="UILayer"]
 layout_mode = 3
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -407.0
-offset_top = -178.0
-offset_right = -230.0
-offset_bottom = -138.0
-grow_horizontal = 2
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -177.0
+offset_bottom = 40.0
+grow_horizontal = 0
 script = ExtResource("5_mcda4")
 
 [node name="PauseMenu" type="Control" parent="UILayer"]
 visible = false
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("6_cw4t1")
 
+[node name="ControlsPopup" type="Control" parent="UILayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dimer" type="ColorRect" parent="UILayer/ControlsPopup"]
+layout_mode = 0
+offset_right = 641.0
+offset_bottom = 357.0
+color = Color(0, 0, 0, 0.49019608)
+
+[node name="PanelContainer" type="PanelContainer" parent="UILayer/ControlsPopup"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -201.0
+offset_top = -141.0
+offset_right = 199.0
+offset_bottom = 139.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(200, 140)
+
+[node name="MarginContainer" type="MarginContainer" parent="UILayer/ControlsPopup/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UILayer/ControlsPopup/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Label" type="Label" parent="UILayer/ControlsPopup/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("7_pvcf7")
+theme_override_font_sizes/font_size = 24
+text = "Controls:"
+
+[node name="Label2" type="Label" parent="UILayer/ControlsPopup/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("7_pvcf7")
+theme_override_font_sizes/font_size = 20
+text = "A, <- (controller) - Dodge left
+W, -> (controller)  - Dodge right
+D,  ↓ (controller) - Duck
+
+Left,  Y (controller) - Light attack
+Right click, B (controller) - Heavy attack
+"
+
+[node name="Label3" type="Label" parent="UILayer/ControlsPopup/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("7_pvcf7")
+text = "Press any button to start"
+
 [node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(320, 180)
 
 [node name="GameController" type="Node" parent="."]

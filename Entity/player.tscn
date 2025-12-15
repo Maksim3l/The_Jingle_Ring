@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://baffuro53158g"]
+[gd_scene load_steps=30 format=3 uid="uid://baffuro53158g"]
 
 [ext_resource type="Script" uid="uid://067anstrd8id" path="res://Entity/player.gd" id="1_ta3ek"]
 [ext_resource type="Texture2D" uid="uid://nq2hefknu0ev" path="res://Assets/Images/Player/Bunny_player-Sheet.png" id="2_0fxvp"]
@@ -148,6 +148,81 @@ tracks/0/keys = {
 "values": [1, 24, 25, 26, 27]
 }
 
+[sub_resource type="Animation" id="Animation_x7om2"]
+resource_name = "dodge_left"
+length = 0.5
+step = 0.09
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.09090909, 0.18181819, 0.36363637, 0.45454547),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [1, 17, 16, 17, 1]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.09090909),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_walb3"]
+resource_name = "dodge_right"
+length = 0.5
+step = 0.09
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.09090909, 0.18181819, 0.36363637, 0.45454547),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [1, 17, 16, 17, 1]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.09090909),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_ioh65"]
+resource_name = "duck"
+length = 0.6
+step = 0.09
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.09090909, 0.18181819, 0.45454547, 0.54545456),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [1, 21, 20, 21, 1]
+}
+
 [sub_resource type="Animation" id="Animation_vnsee"]
 resource_name = "hit_left"
 length = 0.25
@@ -208,27 +283,7 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id="Animation_01uqx"]
 resource_name = "idle"
-length = 8.0
-step = 0.09
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0.031576395, 0.66794, 1.2133945, 1.7272727, 2.2727273, 2.7272727, 4.2207284, 4.857092, 5.4025464, 5.9164248, 6.4618793, 6.9164248),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [1, 0, 1, 2, 1, 1, 1, 0, 1, 2, 1, 1]
-}
-
-[sub_resource type="Animation" id="Animation_01uqx"]
-resource_name = "idle"
 loop_mode = 1
-[sub_resource type="Animation" id="Animation_walb3"]
-resource_name = "dodge_right"
-length = 0.5
 step = 0.09
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -241,57 +296,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [1, 0, 1, 2, 1, 2, 1, 0]
-"times": PackedFloat32Array(0, 0.09090909, 0.18181819, 0.36363637, 0.45454547),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 1,
-"values": [1, 17, 16, 17, 1]
-}
-
-[sub_resource type="Animation" id="Animation_x7om2"]
-resource_name = "dodge_left"
-length = 0.5
-step = 0.09
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.09090909, 0.18181819, 0.36363637, 0.45454547),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 1,
-"values": [1, 17, 16, 17, 1]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite2D:flip_h")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0.09090909),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-
-[sub_resource type="Animation" id="Animation_ioh65"]
-resource_name = "duck"
-length = 0.6
-step = 0.09
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.09090909, 0.18181819, 0.45454547, 0.54545456),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 1,
-"values": [1, 21, 20, 21, 1]
->>>>>>> Stashed changes
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_walb3"]
