@@ -6,6 +6,7 @@ class_name StateMachine
 var current_state: State
 var states: Dictionary = {}
 
+
 func _ready() -> void:
 	# Wait for owner to be ready
 	await owner.ready
@@ -22,18 +23,24 @@ func _ready() -> void:
 	if initial_state:
 		current_state = initial_state
 		current_state.enter()
+	
+	print("StateMachine initialized with states: ", states.keys())
+
 
 func _process(delta: float) -> void:
 	if current_state:
 		current_state.update(delta)
 
+
 func _physics_process(delta: float) -> void:
 	if current_state:
 		current_state.physics_update(delta)
 
+
 func _unhandled_input(event: InputEvent) -> void:
 	if current_state:
 		current_state.handle_input(event)
+
 
 func change_state(new_state_name: String) -> void:
 	var new_state = states.get(new_state_name.to_lower())
@@ -46,6 +53,8 @@ func change_state(new_state_name: String) -> void:
 	
 	current_state = new_state
 	current_state.enter()
+	print("Changed to state: " + new_state_name)
+
 
 func _on_state_transitioned(state, new_state_name: String) -> void:
 	if state != current_state:

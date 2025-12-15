@@ -329,10 +329,6 @@ func choose_buff() -> String:
 
 
 # ===== ATTACK SYSTEM =====
-# Single hitbox - we change the collision MASK to target different player hurtboxes
-# Layer 1 = PlayerHurtboxLeft
-# Layer 2 = PlayerHurtboxRight
-# Layer 3 = PlayerHurtboxOverhead
 
 func enable_hitbox(attack_key: String) -> void:
 	if not hitbox or not hitbox_shape:
@@ -341,15 +337,13 @@ func enable_hitbox(attack_key: String) -> void:
 	# Get the direction from attack data
 	var attack_data = get_attack_data(attack_key)
 	var direction = attack_data["direction"]
-	
-	# Set collision mask based on attack direction
 	match direction:
 		"left":
-			hitbox.collision_mask = 1  # Layer 1: PlayerHurtboxLeft
+			hitbox.collision_mask = 1
 		"right":
-			hitbox.collision_mask = 2  # Layer 2: PlayerHurtboxRight
+			hitbox.collision_mask = 2
 		"overhead":
-			hitbox.collision_mask = 3  # Layer 3: PlayerHurtboxOverhead
+			hitbox.collision_mask = 4 
 	
 	# Enable the hitbox
 	hitbox_shape.disabled = false
@@ -357,6 +351,8 @@ func enable_hitbox(attack_key: String) -> void:
 	current_attack_type = attack_key
 	current_attack_direction = direction
 	attack_started.emit(attack_key)
+	
+	print("[ENEMY] Attack enabled: %s (direction: %s, mask: %d)" % [attack_key, direction, hitbox.collision_mask])
 
 
 func disable_hitbox() -> void:
