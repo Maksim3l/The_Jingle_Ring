@@ -259,6 +259,7 @@ func _hide_pause_menu() -> void:
 
 func _show_game_over() -> void:
 	print("GAME OVER")
+	get_tree().change_scene_to_file("res://Screens/game_over_screen.tscn")
 
 
 func _show_victory() -> void:
@@ -266,6 +267,8 @@ func _show_victory() -> void:
 	var stats = GameManager.get_final_stats()
 	print("Final Score: ", stats.score)
 	print("Rating: ", stats.rating)
+	await get_tree().create_timer(1.0).timeout
+	get_tree().change_scene_to_file("res://Screens/victory.tscn")
 
 
 # ===== UTILITY =====

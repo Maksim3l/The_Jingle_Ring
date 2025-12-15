@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://d1yo12j43u5gu"
+path="res://.godot/imported/cork pop.wav-6f06f5e908ddb16044c9e0f405d65b75.sample"
+
+[deps]
+
+source_file="res://Assets/Audio/cork pop.wav"
+dest_files=["res://.godot/imported/cork pop.wav-6f06f5e908ddb16044c9e0f405d65b75.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

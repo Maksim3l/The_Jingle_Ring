@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://co5rmyf6ywxc8"
+path="res://.godot/imported/scary shattering.ogg-729b39683858b797ebfe51f8df909f72.oggvorbisstr"
+
+[deps]
+
+source_file="res://Assets/Audio/scary shattering.ogg"
+dest_files=["res://.godot/imported/scary shattering.ogg-729b39683858b797ebfe51f8df909f72.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

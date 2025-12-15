@@ -130,7 +130,7 @@ Right click, B (controller) - Heavy attack
 [node name="Label3" type="Label" parent="UILayer/ControlsPopup/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("7_pvcf7")
-text = "Press any button to start"
+text = "Press SPACE to start"
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(320, 180)

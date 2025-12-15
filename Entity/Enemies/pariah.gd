@@ -3,8 +3,8 @@ class_name PariahScary
 
 
 func _ready() -> void:
-	max_hp = 100
-	attack_damage = 2
+	max_hp = 10
+	attack_damage = 1
 	telegraph_duration = 0.4
 	idle_duration_min = 0.8
 	idle_duration_max = 1.5
