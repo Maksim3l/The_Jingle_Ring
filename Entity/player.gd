@@ -233,7 +233,6 @@ func play_all_hit_feedback() -> void:
 
 
 func set_hurtboxes(left: bool, right: bool, overhead: bool) -> void:
-	# Direct assignment for immediate effect - critical for dodge timing
 	hurtbox_left_shape.disabled = not left
 	hurtbox_right_shape.disabled = not right
 	hurtbox_overhead_shape.disabled = not overhead

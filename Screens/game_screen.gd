@@ -135,12 +135,10 @@ func spawn_next_enemy() -> void:
 		# All enemies defeated!
 		_on_all_enemies_defeated()
 		return
-	
-	# Remove current enemy if exists
+
 	if current_enemy and is_instance_valid(current_enemy):
 		current_enemy.queue_free()
-	
-	# Spawn new enemy
+
 	var enemy_scene = enemy_scenes[current_enemy_index]
 	current_enemy = enemy_scene.instantiate()
 	

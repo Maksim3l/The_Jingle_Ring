@@ -5,8 +5,6 @@ var is_dodging: bool = false
 
 func enter() -> void:
 	is_dodging = true
-	# Dodge LEFT = body moves left = avoid attacks coming from RIGHT
-	# So we disable the RIGHT hurtbox (second parameter)
 	player.set_hurtboxes(true, false, true)
 	
 	player.sprite.flip_h = false
