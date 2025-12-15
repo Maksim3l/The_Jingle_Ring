@@ -6,12 +6,15 @@ func enter() -> void:
 	is_ducking = true
 	player.set_hurtboxes(true, true, false)  # Disable overhead hurtbox
 	player.anim_player.play("duck")
+	player.anim_player.animation_finished.connect(_on_animation_finished)
 
-func handle_input(event: InputEvent) -> void:
-	# Return to idle when duck key released
-	if event.is_action_released("duck"):
+func _on_animation_finished(anim_name: String) -> void:
+	if anim_name == "duck" and is_ducking:
 		transitioned.emit(self, "IdleState")
 
 func exit() -> void:
 	is_ducking = false
 	player.set_hurtboxes(true, true, true)  # Re-enable all
+	
+	if player.anim_player.animation_finished.is_connected(_on_animation_finished):
+		player.anim_player.animation_finished.disconnect(_on_animation_finished)

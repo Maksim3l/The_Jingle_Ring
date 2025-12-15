@@ -349,7 +349,7 @@ func enable_hitbox(attack_key: String) -> void:
 		"right":
 			hitbox.collision_mask = 2  # Layer 2: PlayerHurtboxRight
 		"overhead":
-			hitbox.collision_mask = 4  # Layer 3: PlayerHurtboxOverhead
+			hitbox.collision_mask = 3  # Layer 3: PlayerHurtboxOverhead
 	
 	# Enable the hitbox
 	hitbox_shape.disabled = false

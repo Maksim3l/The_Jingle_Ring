@@ -6,8 +6,8 @@ func _ready() -> void:
 	# Stage 1: Very slow tutorial boss
 	max_hp = 5
 	attack_damage = 1
-	telegraph_duration = 1.0  # Very long telegraph
-	idle_duration_min = 1
+	telegraph_duration = 2  # Very long telegraph
+	idle_duration_min = 2
 	idle_duration_max = 2
 	score_value = 1000
 	max_phases = 2
@@ -43,9 +43,9 @@ func _on_phase_changed() -> void:
 			max_hp = 50
 			current_hp = max_hp
 			
-			telegraph_duration = 0.6
-			idle_duration_min = 0.8
-			idle_duration_max = 1.2
+			telegraph_duration = 1
+			idle_duration_min = 1
+			idle_duration_max = 1
 			
 			# Phase 2: More aggressive mix
 			available_attacks = ["cork", "bottle", "cork", "bottle"]

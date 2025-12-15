@@ -259,7 +259,7 @@ func _hide_pause_menu() -> void:
 
 func _show_game_over() -> void:
 	print("GAME OVER")
-	get_tree().change_scene_to_file("res://Screens/game_over_screen.tscn")
+	get_tree().call_deferred("change_scene_to_file", "res://Screens/game_over_screen.tscn")
 
 
 func _show_victory() -> void:

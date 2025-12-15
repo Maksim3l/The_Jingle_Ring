@@ -3,7 +3,8 @@ class_name Player
 
 signal died
 
-@export var base_damage: int = 10
+@export var base_damage: int = 1
+@export var invulnerability_duration: float = 1.0  # NEW: Time in seconds to be safe
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
@@ -26,6 +27,7 @@ const PUNCH_SOUND = preload("res://Assets/Audio/punch.wav")
 var original_position: Vector2
 var hit_tween: Tween
 var last_hit_direction: String
+var is_invulnerable: bool = false
 
 
 func _ready() -> void:
@@ -45,6 +47,9 @@ func _ready() -> void:
 
 
 func _on_hurtbox_hit(area: Area2D, direction: String) -> void:
+	if is_invulnerable:
+		return
+	
 	if not GameManager.is_playing():
 		return
 	
@@ -56,6 +61,9 @@ func _on_hurtbox_hit(area: Area2D, direction: String) -> void:
 
 
 func _on_hitbox_hit(_area: Area2D) -> void:
+	if is_invulnerable:
+		return
+		
 	if not GameManager.is_playing():
 		return
 	
@@ -71,10 +79,38 @@ func _on_hitbox_hit(_area: Area2D) -> void:
 
 
 func take_damage(damage: int, direction: String = "center") -> void:
+	if is_invulnerable:
+		return
+	
 	last_hit_direction = direction
 	GameManager.take_damage(damage)
-	state_machine.change_state("HitState")
+	state_machine.call_deferred("change_state", "HitState")
+	
+	_start_invulnerability()
 
+func _start_invulnerability() -> void:
+	is_invulnerable = true
+	
+	if hit_tween and hit_tween.is_valid():
+		hit_tween.kill()
+		
+	hit_tween = create_tween()
+	hit_tween.set_parallel(true)
+	
+	var num_loops = int(invulnerability_duration / 0.2)
+	
+	var flash_sequence = create_tween().set_loops(num_loops)
+	flash_sequence.tween_property(sprite, "modulate:a", 0.5, 0.1) # Fade out
+	flash_sequence.tween_property(sprite, "modulate:a", 1.0, 0.1) # Fade in
+	hit_tween.tween_interval(0)
+	hit_tween.set_parallel(false)
+	hit_tween.tween_interval(invulnerability_duration)
+
+	hit_tween.tween_callback(func():
+		is_invulnerable = false
+		sprite.modulate.a = 1.0 
+		flash_sequence.kill()
+		)
 
 # ===== HIT FEEDBACK METHODS =====
 
@@ -111,8 +147,7 @@ func play_all_hit_feedback() -> void:
 	wobble()
 	start_blood()
 
-
 func set_hurtboxes(left: bool, right: bool, overhead: bool) -> void:
-	hurtbox_left_shape.disabled = not left
-	hurtbox_right_shape.disabled = not right
-	hurtbox_overhead_shape.disabled = not overhead
+	hurtbox_left_shape.set_deferred("disabled", not left)
+	hurtbox_right_shape.set_deferred("disabled", not right)
+	hurtbox_overhead_shape.set_deferred("disabled", not overhead)
