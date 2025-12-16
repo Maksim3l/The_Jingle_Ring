@@ -39,7 +39,6 @@ func _ready() -> void:
 	GameManager.hp_changed.connect(_on_hp_changed)
 	GameManager.score_changed.connect(_on_score_changed)
 	GameManager.combo_changed.connect(_on_combo_changed)
-	GameManager.stars_changed.connect(_on_stars_changed)
 	
 	# Load enemy scenes if not set in editor
 	if enemy_scenes.is_empty():
@@ -203,11 +202,10 @@ func _on_player_died() -> void:
 # ===== UI UPDATES =====
 
 func _setup_ui() -> void:
-	"""Initialize UI components."""
+	"""Initialize UI components.""" 
 	_on_hp_changed(GameManager.current_hp, GameManager.max_hp)
 	_on_score_changed(GameManager.score)
 	_on_combo_changed(GameManager.combo)
-	_on_stars_changed(GameManager.stars)
 	
 	if pause_menu:
 		pause_menu.visible = false
@@ -226,12 +224,6 @@ func _on_score_changed(new_score: int) -> void:
 func _on_combo_changed(new_combo: int) -> void:
 	if score_display and score_display.has_method("update_combo"):
 		score_display.update_combo(new_combo)
-
-
-func _on_stars_changed(new_stars: int) -> void:
-	if health_display and health_display.has_method("update_stars"):
-		health_display.update_stars(new_stars)
-
 
 func _on_game_state_changed(new_state: GameManager.GameState) -> void:
 	match new_state:
@@ -257,7 +249,16 @@ func _hide_pause_menu() -> void:
 
 func _show_game_over() -> void:
 	print("GAME OVER")
+	if not current_enemy.anim_player.animation_finished.is_connected(_on_animation_finished):
+		current_enemy.anim_player.animation_finished.connect(_on_animation_finished)
+	
+
+func _on_animation_finished(_anim_name: String) -> void:
+	if current_enemy.anim_player.animation_finished.is_connected(_on_animation_finished):
+		current_enemy.anim_player.animation_finished.disconnect(_on_animation_finished)
+	
 	get_tree().call_deferred("change_scene_to_file", "res://Screens/game_over_screen.tscn")
+
 
 
 func _show_victory() -> void:

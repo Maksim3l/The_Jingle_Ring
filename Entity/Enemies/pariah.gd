@@ -5,7 +5,7 @@ class_name PariahScary
 func _ready() -> void:
 	max_hp = 100
 	attack_damage = 1
-	telegraph_duration = 0.4
+	telegraph_duration = 0.8
 	idle_duration_min = 0.8
 	idle_duration_max = 1.5
 	score_value = 10000
@@ -25,9 +25,6 @@ func _ready() -> void:
 
 
 func _setup_attacks() -> void:
-	# Register Pariah's unique attacks with sounds
-	# Format: register_attack(attack_key, direction, tell_anim, attack_anim, sound)
-	
 	# Claw attacks
 	register_attack("claw_left", "left", "tell_claw_left", "claw_left", "claw.wav")
 	register_attack("claw_right", "right", "tell_claw_right", "claw_right", "claw.wav")

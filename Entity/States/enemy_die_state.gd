@@ -15,7 +15,7 @@ func enter() -> void:
 		enemy.hurtbox_shape.disabled = true
 	
 	# Play death animation
-	enemy.anim_player.play("die")
+	enemy.anim_player.play("death")
 	
 	# Connect to animation finished
 	if not enemy.anim_player.animation_finished.is_connected(_on_animation_finished):
@@ -27,7 +27,7 @@ func enter() -> void:
 
 
 func _on_animation_finished(anim_name: String) -> void:
-	if anim_name == "die" and is_dying:
+	if anim_name == "death" and is_dying:
 		# Death animation complete - enemy can be removed or hidden
 		enemy.visible = false
 		# The game controller will handle spawning the next enemy

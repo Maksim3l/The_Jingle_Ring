@@ -179,13 +179,6 @@ func _setup_attacks() -> void:
 	register_attack("overhead", "overhead", "telegraph_overhead", "attack_overhead", "")
 	available_attacks = ["left", "right"]
 
-
-# Helper to register an attack
-# attack_key: unique identifier for this attack (e.g., "claw_left", "kick_right")
-# direction: which player hurtbox it targets ("left", "right", "overhead")
-# tell_anim: animation name for telegraph (e.g., "tell_claw_left")
-# attack_anim: animation name for attack (e.g., "claw_left")
-# sound: sound file to play on attack (e.g., "claw.wav") - can be empty
 func register_attack(attack_key: String, direction: String, tell_anim: String, attack_anim: String, sound: String = "") -> void:
 	attack_registry[attack_key] = {
 		"direction": direction,
