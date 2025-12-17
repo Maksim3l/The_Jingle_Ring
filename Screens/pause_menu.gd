@@ -3,7 +3,6 @@ extends Control
 ## PauseMenu - Shown when game is paused
 
 signal resume_pressed
-signal retry_pressed
 signal quit_pressed
 
 @export var title_font: Font
@@ -12,7 +11,6 @@ signal quit_pressed
 var panel: Panel
 var title_label: Label
 var resume_button: Button
-var retry_button: Button
 var quit_button: Button
 
 
@@ -78,15 +76,6 @@ func _setup_ui() -> void:
 	resume_button.pressed.connect(_on_resume_pressed)
 	vbox.add_child(resume_button)
 	
-	# Retry button
-	retry_button = Button.new()
-	retry_button.text = "Retry"
-	retry_button.custom_minimum_size = Vector2(140, 40)
-	if button_font:
-		retry_button.add_theme_font_override("font", button_font)
-	retry_button.pressed.connect(_on_retry_pressed)
-	vbox.add_child(retry_button)
-	
 	# Quit button
 	quit_button = Button.new()
 	quit_button.text = "Quit to Menu"
@@ -100,13 +89,6 @@ func _setup_ui() -> void:
 func _on_resume_pressed() -> void:
 	GameManager.resume_game()
 	resume_pressed.emit()
-
-
-func _on_retry_pressed() -> void:
-	GameManager.resume_game()  # Unpause first
-	retry_pressed.emit()
-	# The game screen will handle the actual retry logic
-
 
 func _on_quit_pressed() -> void:
 	GameManager.reset_to_menu()
